@@ -7,6 +7,7 @@ import {
   User,
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
+import { APP_BRAND, HOUSEHOLD_DEFAULTS } from '@/src/constants';
 import type { AppSettings } from '@/src/types/homevault';
 
 interface ProfileViewProps {
@@ -40,8 +41,8 @@ export function ProfileView({
     residenceName !== settings.residenceName ||
     ownerEmail !== settings.ownerEmail;
 
-  const displayOwner = ownerName.trim() || 'Homeowner';
-  const displayResidence = residenceName.trim() || 'Main Residence';
+  const displayOwner = ownerName.trim() || HOUSEHOLD_DEFAULTS.ownerName;
+  const displayResidence = residenceName.trim() || HOUSEHOLD_DEFAULTS.residenceName;
   const displayEmail = ownerEmail.trim();
 
   const initials = displayOwner
@@ -174,7 +175,7 @@ export function ProfileView({
                     required
                     value={residenceName}
                     onChange={(e) => setResidenceName(e.target.value)}
-                    placeholder="e.g., Main Residence"
+                    placeholder={`e.g., ${HOUSEHOLD_DEFAULTS.residenceName}`}
                     className="w-full px-3 py-2 rounded-lg bg-hv-subtle border border-hv-border-strong text-[13px] text-hv-text focus:outline-none focus:ring-2 focus:ring-hv-accent-fg/40"
                   />
                 </label>
@@ -256,7 +257,7 @@ export function ProfileView({
                 <div className="flex items-start justify-between gap-3 border-b border-hv-border pb-3">
                   <div className="min-w-0">
                     <div className="text-[11px] font-semibold uppercase tracking-wider text-hv-accent-fg">
-                      HomeVault Insurance Report
+                      {APP_BRAND.name} Insurance Report
                     </div>
                     <div className="text-[15px] font-semibold text-hv-text mt-0.5 truncate">
                       {displayResidence}

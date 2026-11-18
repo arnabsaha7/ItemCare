@@ -8,6 +8,7 @@ import {
   sendNotification,
 } from '@tauri-apps/plugin-notification';
 import { openPath } from '@tauri-apps/plugin-opener';
+import { APP_BRAND } from '@/src/constants';
 
 export function isTauriRuntime(): boolean {
   return (
@@ -71,7 +72,9 @@ export async function pickNativeFile(options: {
   return typeof selected === 'string' ? selected : null;
 }
 
-export async function pickNativeDirectory(title = 'Choose HomeVault Storage Folder'): Promise<string | null> {
+export async function pickNativeDirectory(
+  title = `Choose ${APP_BRAND.name} Storage Folder`
+): Promise<string | null> {
   if (!isTauriRuntime()) return null;
   const selected = await dialogOpen({
     title,

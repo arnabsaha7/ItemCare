@@ -12,6 +12,7 @@ import type {
   PropertySpecsBundle,
   WarrantyRecord,
 } from '@/src/types/homevault';
+import { APP_BRAND } from '@/src/constants';
 import { DEFAULT_SETTINGS, isDarkTheme } from '@/src/types/homevault';
 import { homeVaultService } from '@/src/services/database/homeVaultService';
 import { evaluateMaintenanceTask, evaluateWarranty } from '@/src/utils/format';
@@ -73,7 +74,7 @@ export function useHomeVault() {
       setBackups(backupList);
       setSettings(appSettings);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to load HomeVault data.');
+      setError(err instanceof Error ? err.message : `Failed to load ${APP_BRAND.name} data.`);
     } finally {
       setLoading(false);
     }

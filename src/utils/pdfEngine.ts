@@ -1,5 +1,6 @@
 import * as pdfjsLib from 'pdfjs-dist';
 import pdfjsWorkerUrl from 'pdfjs-dist/build/pdf.worker.min.mjs?url';
+import { APP_BRAND } from '@/src/constants';
 import type { AssetRecord } from '@/src/types/homevault';
 import { formatDate } from './format';
 
@@ -62,7 +63,7 @@ export async function renderPdfPageToCanvas(
  * Builds a valid multi-page PDF document from page text lines (pure TypeScript PDF 1.4 writer).
  * Used for:
  *  1. Real Bosch Serie 6 Washer User Manual (36 pages, with Error Code E04 on Page 34)
- *  2. Real HomeVault Insurance Valuation Report PDF in Browser Preview exports
+ *  2. Real ItemCare Insurance Valuation Report PDF in Browser Preview exports
  */
 export function buildValidPdfDocument(pagesLines: string[][]): Uint8Array {
   const objects: string[] = [];
@@ -143,7 +144,7 @@ export function getSeededBoschManualPdfBytes(): Uint8Array {
     if (p === 1) {
       pages.push([
         'Bosch Serie 6 Front-Load Washing Machine — User Manual (Model WAJ2846IN)',
-        'HomeVault Verified Appliance Documentation',
+        `${APP_BRAND.name} Verified Appliance Documentation`,
         ' ',
         'Table of Contents:',
         '  Page 04  Safety Instructions & Electrical Requirements (16A Socket)',
@@ -198,7 +199,7 @@ export function buildValuationReportPdfBytes(
     const chunk = assets.slice(i, i + rowsPerPage);
     const lines: string[] = [];
     if (i === 0) {
-      lines.push('HomeVault — Insurance & Moving Valuation Report');
+      lines.push(`${APP_BRAND.name} — Insurance & Moving Valuation Report`);
       lines.push(
         `Scope: ${scopeLabel}  |  Generated: ${formatDate(new Date().toISOString())}  |  Assets: ${assets.length}`
       );
@@ -207,7 +208,7 @@ export function buildValuationReportPdfBytes(
       );
       lines.push('------------------------------------------------------------------------------------');
     } else {
-      lines.push(`HomeVault Valuation Report (Continued — Page ${Math.floor(i / rowsPerPage) + 1})`);
+      lines.push(`${APP_BRAND.name} Valuation Report (Continued — Page ${Math.floor(i / rowsPerPage) + 1})`);
       lines.push('------------------------------------------------------------------------------------');
     }
 

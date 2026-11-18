@@ -1,8 +1,8 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
-  "productName": "HomeVault",
+  "productName": "ItemCare",
   "version": "../package.json",
-  "identifier": "com.homevault.desktop",
+  "identifier": "com.itemcare.desktop",
   "build": {
     "beforeDevCommand": "npm run dev",
     "devUrl": "http://localhost:3000",
@@ -13,7 +13,7 @@
     "windows": [
       {
         "label": "main",
-        "title": "HomeVault",
+        "title": "ItemCare",
         "width": 1440,
         "height": 1000,
         "minWidth": 1080,
@@ -27,7 +27,7 @@
       "csp": "default-src 'self'; img-src 'self' asset: https://asset.localhost data: blob:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; worker-src 'self' blob:;",
       "assetProtocol": {
         "enable": true,
-        "scope": ["$APPDATA/HomeVault/**"]
+        "scope": ["$APPDATA/ItemCare/**"]
       }
     }
   },
@@ -36,7 +36,7 @@
     "targets": ["nsis", "msi"],
     "shortDescription": "Your Personal Home & Asset Command Center",
     "longDescription": "Local-first Windows desktop command center for household assets, warranties, maintenance schedules, property documentation, and encrypted insurance packs.",
-    "copyright": "Copyright (c) 2026 HomeVault",
+    "copyright": "Copyright (c) 2026 ItemCare",
     "category": "Utility",
     "icon": [
       "icons/32x32.png",

@@ -26,6 +26,15 @@ import type {
   WarrantyRecord,
 } from '@/src/types/homevault';
 import {
+  APP_BRAND,
+  APP_PATHS,
+  BACKUP_CONFIG,
+  HOUSEHOLD_DEFAULTS,
+  SAMPLE_ASSET_IMAGES,
+  STORAGE_KEYS,
+  SUPPORTED_DOCUMENT_EXTENSIONS,
+} from '@/src/constants';
+import {
   buildStructuredRelativePath,
   DEFAULT_SETTINGS,
   normalizeSettings,
@@ -36,9 +45,10 @@ import {
   getSeededBoschManualPdfBytes,
 } from '@/src/utils/pdfEngine';
 
-const STORAGE_KEY = 'homevault_browser_preview_db_v2';
-const DEFAULT_PREVIEW_STORAGE_PATH = 'D:\\HomeVault\\VaultFiles';
-const IDB_NAME = 'HomeVaultPreviewFiles';
+const STORAGE_KEY = STORAGE_KEYS.previewDb;
+const LEGACY_STORAGE_KEY = STORAGE_KEYS.legacyPreviewDb;
+const DEFAULT_PREVIEW_STORAGE_PATH = APP_PATHS.defaultSavePath;
+const IDB_NAME = STORAGE_KEYS.previewIndexedDb;
 const IDB_STORE = 'blobs';
 
 interface PreviewDatabase {
@@ -144,12 +154,12 @@ function createLookupSeed(): { categories: Category[]; locations: Location[] } {
   ];
 
   const locations: Location[] = [
-    { id: uuid(), name: 'Living Room', groupName: 'Main Residence', sortOrder: 1, createdAt: nowIso },
-    { id: uuid(), name: 'Kitchen', groupName: 'Main Residence', sortOrder: 2, createdAt: nowIso },
-    { id: uuid(), name: 'Master Bedroom', groupName: 'Main Residence', sortOrder: 3, createdAt: nowIso },
-    { id: uuid(), name: 'Utility & Garage', groupName: 'Main Residence', sortOrder: 4, createdAt: nowIso },
-    { id: uuid(), name: 'Vehicles', groupName: 'Other Categories', sortOrder: 5, createdAt: nowIso },
-    { id: uuid(), name: 'Everyday Carry', groupName: 'Other Categories', sortOrder: 6, createdAt: nowIso },
+    { id: uuid(), name: 'Living Room', groupName: HOUSEHOLD_DEFAULTS.residenceName, sortOrder: 1, createdAt: nowIso },
+    { id: uuid(), name: 'Kitchen', groupName: HOUSEHOLD_DEFAULTS.residenceName, sortOrder: 2, createdAt: nowIso },
+    { id: uuid(), name: 'Master Bedroom', groupName: HOUSEHOLD_DEFAULTS.residenceName, sortOrder: 3, createdAt: nowIso },
+    { id: uuid(), name: 'Utility & Garage', groupName: HOUSEHOLD_DEFAULTS.residenceName, sortOrder: 4, createdAt: nowIso },
+    { id: uuid(), name: 'Vehicles', groupName: HOUSEHOLD_DEFAULTS.otherCategoriesGroup, sortOrder: 5, createdAt: nowIso },
+    { id: uuid(), name: 'Everyday Carry', groupName: HOUSEHOLD_DEFAULTS.otherCategoriesGroup, sortOrder: 6, createdAt: nowIso },
   ];
 
   return { categories, locations };
@@ -202,7 +212,7 @@ function buildSampleSeedData(categories: Category[], locations: Location[]): Omi
       retailer: 'Reliance Digital',
       invoice: 'RD-2024-99412',
       featured: true,
-      photoPath: '/src/assets/images/asset_oled_tv_1794990119635.jpg',
+      photoPath: SAMPLE_ASSET_IMAGES.oledTv,
       warrantyProvider: 'LG India Care',
       warrantyType: 'Extended Care' as const,
       warrantyDays: 412,
@@ -221,7 +231,7 @@ function buildSampleSeedData(categories: Category[], locations: Location[]): Omi
       retailer: 'Bosch Brand Store',
       invoice: 'BSH-IN-44810',
       featured: true,
-      photoPath: '/src/assets/images/asset_front_washer_1794990120962.jpg',
+      photoPath: SAMPLE_ASSET_IMAGES.frontWasher,
       warrantyProvider: 'Bosch Home Appliances',
       warrantyType: 'Manufacturer' as const,
       warrantyDays: 18,
@@ -240,7 +250,7 @@ function buildSampleSeedData(categories: Category[], locations: Location[]): Omi
       retailer: 'Croma Electronics',
       invoice: 'CRM-MUM-81204',
       featured: true,
-      photoPath: '/src/assets/images/asset_split_ac_1794990120906.jpg',
+      photoPath: SAMPLE_ASSET_IMAGES.splitAc,
       warrantyProvider: 'Daikin Airconditioning India',
       warrantyType: 'Manufacturer' as const,
       warrantyDays: 320,
@@ -259,7 +269,7 @@ function buildSampleSeedData(categories: Category[], locations: Location[]): Omi
       retailer: "Something's Brewing",
       invoice: 'SB-2025-1189',
       featured: true,
-      photoPath: '/src/assets/images/asset_espresso_machine_1794990121471.jpg',
+      photoPath: SAMPLE_ASSET_IMAGES.espressoMachine,
       warrantyProvider: 'Breville Care Plus',
       warrantyType: 'Extended Care' as const,
       warrantyDays: 730,
@@ -278,7 +288,7 @@ function buildSampleSeedData(categories: Category[], locations: Location[]): Omi
       retailer: 'Apple BKC Mumbai',
       invoice: 'APL-IN-551920',
       featured: true,
-      photoPath: '/src/assets/images/asset_macbook_pro_1794990121787.jpg',
+      photoPath: SAMPLE_ASSET_IMAGES.macbookPro,
       warrantyProvider: 'AppleCare+',
       warrantyType: 'AppleCare+' as const,
       warrantyDays: 540,
@@ -297,7 +307,7 @@ function buildSampleSeedData(categories: Category[], locations: Location[]): Omi
       retailer: 'Amazon India',
       invoice: 'AMZ-IN-774920',
       featured: true,
-      photoPath: '/src/assets/images/asset_anc_headphones_1794990121284.jpg',
+      photoPath: SAMPLE_ASSET_IMAGES.ancHeadphones,
       warrantyProvider: 'Sony India',
       warrantyType: 'Manufacturer' as const,
       warrantyDays: -95,
@@ -627,7 +637,7 @@ function buildSampleSeedData(categories: Category[], locations: Location[]): Omi
       id: uuid(),
       routerName: 'Primary Mesh Gateway',
       model: 'ASUS ZenWiFi XT8 (AX6600)',
-      ssid: 'HomeVault_5G_Mesh',
+      ssid: APP_BRAND.sampleWifiSsid,
       encryptedPassword: 'HV-Mesh@2026#Secure',
       ipAddress: '192.168.50.1',
       notes: 'Dual-band Wi-Fi 6 backhaul wired to Living Room & Study',
@@ -675,7 +685,7 @@ function buildSampleSeedData(categories: Category[], locations: Location[]): Omi
 }
 
 function loadDb(): PreviewDatabase {
-  const raw = localStorage.getItem(STORAGE_KEY);
+  const raw = localStorage.getItem(STORAGE_KEY) ?? localStorage.getItem(LEGACY_STORAGE_KEY);
   if (!raw) {
     const clean = createCleanSeed();
     saveDb(clean);
@@ -738,7 +748,7 @@ export const browserPreviewAdapter = {
       loc = {
         id: uuid(),
         name: input.locationName,
-        groupName: 'Main Residence',
+        groupName: HOUSEHOLD_DEFAULTS.residenceName,
         sortOrder: 99,
         createdAt: nowIso,
       };
@@ -1007,8 +1017,7 @@ export const browserPreviewAdapter = {
     extractedPages?: Array<{ pageNumber: number; content: string }>
   ): Promise<DocumentWithLinks> {
     const ext = (file.name.split('.').pop() || '').toLowerCase();
-    const allowed = ['pdf', 'jpg', 'jpeg', 'png', 'docx', 'xlsx', 'txt'];
-    if (!allowed.includes(ext)) {
+    if (!(SUPPORTED_DOCUMENT_EXTENSIONS as readonly string[]).includes(ext)) {
       throw new Error(`Unsupported file extension .${ext}`);
     }
     const buffer = await file.arrayBuffer();
@@ -1338,7 +1347,7 @@ export const browserPreviewAdapter = {
 
     if (request.includeValuationPdf) {
       const pdfBytes = buildValuationReportPdfBytes(assets, request.roomFilter || 'Entire Home');
-      zip.file('HomeVault_Valuation_Report.pdf', pdfBytes);
+      zip.file(BACKUP_CONFIG.valuationReportFilename, pdfBytes);
     }
 
     if (request.includeMaintenanceHistory) {
@@ -1371,7 +1380,7 @@ export const browserPreviewAdapter = {
     }
 
     const zipBytes = await zip.generateAsync({ type: 'uint8array', compression: 'DEFLATE' });
-    const filename = `HomeVault_Insurance_Pack_${todayIsoDate()}.zip`;
+    const filename = `${APP_BRAND.name}_Insurance_Pack_${todayIsoDate()}.zip`;
     triggerBrowserDownload(zipBytes, filename, 'application/zip');
 
     return {
@@ -1393,7 +1402,7 @@ export const browserPreviewAdapter = {
     const dbBytes = new TextEncoder().encode(payload);
     const dbSha = await sha256Hex(dbBytes);
     const manifest: BackupManifest = {
-      appVersion: '1.0.0',
+      appVersion: APP_BRAND.version,
       createdAt: new Date().toISOString(),
       assetCount: db.assets.length,
       documentCount: db.documents.length,
@@ -1402,7 +1411,7 @@ export const browserPreviewAdapter = {
 
     const zip = new JSZip();
     zip.file('manifest.json', JSON.stringify(manifest, null, 2));
-    zip.file('homevault_preview_db.json', payload);
+    zip.file(BACKUP_CONFIG.previewDbEntryName, payload);
 
     for (const doc of db.documents) {
       if (!doc.filePath.startsWith('builtin:')) {
@@ -1413,7 +1422,7 @@ export const browserPreviewAdapter = {
 
     const archiveBytes = await zip.generateAsync({ type: 'uint8array', compression: 'DEFLATE' });
     const checksum = await sha256Hex(archiveBytes);
-    const archiveName = `HomeVault_Backup_${todayIsoDate()}_${Date.now().toString().slice(-4)}.hvbackup`;
+    const archiveName = `${APP_BRAND.name}_Backup_${todayIsoDate()}_${Date.now().toString().slice(-4)}.${BACKUP_CONFIG.extension}`;
 
     triggerBrowserDownload(archiveBytes, archiveName, 'application/zip');
 
@@ -1436,9 +1445,11 @@ export const browserPreviewAdapter = {
   async validateBackupFileBrowser(file: File): Promise<BackupManifest> {
     const zip = await JSZip.loadAsync(await file.arrayBuffer());
     const manifestEntry = zip.file('manifest.json');
-    const dbEntry = zip.file('homevault_preview_db.json');
+    const dbEntry =
+      zip.file(BACKUP_CONFIG.previewDbEntryName) ??
+      zip.file(BACKUP_CONFIG.legacyPreviewDbEntryName);
     if (!manifestEntry || !dbEntry) {
-      throw new Error('Invalid HomeVault backup archive: missing manifest or database payload.');
+      throw new Error(`Invalid ${APP_BRAND.name} backup archive: missing manifest or database payload.`);
     }
     const manifest = JSON.parse(await manifestEntry.async('string')) as BackupManifest;
     const dbStr = await dbEntry.async('string');
@@ -1454,10 +1465,12 @@ export const browserPreviewAdapter = {
     // Pre-restore snapshot saved to sessionStorage for rollback
     const currentRaw = localStorage.getItem(STORAGE_KEY);
     if (currentRaw) {
-      sessionStorage.setItem('homevault_pre_restore_snapshot', currentRaw);
+      sessionStorage.setItem(STORAGE_KEYS.previewPreRestoreSnapshot, currentRaw);
     }
     const zip = await JSZip.loadAsync(await file.arrayBuffer());
-    const dbEntry = zip.file('homevault_preview_db.json');
+    const dbEntry =
+      zip.file(BACKUP_CONFIG.previewDbEntryName) ??
+      zip.file(BACKUP_CONFIG.legacyPreviewDbEntryName);
     if (!dbEntry) throw new Error('Database payload missing in backup.');
     const restoredDb = JSON.parse(await dbEntry.async('string')) as PreviewDatabase;
     saveDb(restoredDb);

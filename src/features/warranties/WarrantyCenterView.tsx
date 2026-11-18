@@ -1,5 +1,6 @@
 import { Download, Plus, ShieldAlert, ShieldCheck, Trash2 } from 'lucide-react';
 import { useMemo, useState } from 'react';
+import { WARRANTY_TYPES } from '@/src/constants';
 import type { AssetRecord, WarrantyRecord, WarrantyType } from '@/src/types/homevault';
 import { addDaysIso, evaluateWarranty, formatDate, formatINR, todayIsoDate } from '@/src/utils/format';
 import { homeVaultService } from '@/src/services/database/homeVaultService';
@@ -167,10 +168,11 @@ export function WarrantyCenterView({
             onChange={(e) => setForm({ ...form, warrantyType: e.target.value as WarrantyType })}
             className={inputCls}
           >
-            <option value="Manufacturer">Manufacturer</option>
-            <option value="Extended Care">Extended Care</option>
-            <option value="AppleCare+">AppleCare+</option>
-            <option value="Retailer Plan">Retailer Plan</option>
+            {WARRANTY_TYPES.map((wt) => (
+              <option key={wt} value={wt}>
+                {wt}
+              </option>
+            ))}
           </select>
           <input
             type="date"

@@ -1,12 +1,13 @@
 import { HomeVaultIcon } from '@/src/components/shared/HomeVaultIcon';
+import { APP_BRAND } from '@/src/constants';
 
 export function AboutView({ embedded = false }: { embedded?: boolean }) {
   const details = [
-    { label: 'Application', value: 'HomeVault' },
-    { label: 'Version', value: '1.0.0' },
-    { label: 'Created By', value: 'Arnab' },
-    { label: 'Mode', value: 'Offline-First (Saved on your device)' },
-    { label: 'Supported OS', value: 'Windows 10 & Windows 11' },
+    { label: 'Application', value: APP_BRAND.name },
+    { label: 'Version', value: APP_BRAND.version },
+    { label: 'Created By', value: APP_BRAND.creator },
+    { label: 'Mode', value: APP_BRAND.modeLabel },
+    { label: 'Supported OS', value: APP_BRAND.supportedOs },
   ];
 
   const content = (
@@ -14,7 +15,7 @@ export function AboutView({ embedded = false }: { embedded?: boolean }) {
       {embedded && (
         <div>
           <h2 className="text-[20px] font-semibold tracking-tight text-hv-text">
-            About HomeVault
+            About {APP_BRAND.name}
           </h2>
           <p className="text-[13px] text-hv-muted mt-0.5">
             Application information and version details.
@@ -27,11 +28,10 @@ export function AboutView({ embedded = false }: { embedded?: boolean }) {
         <HomeVaultIcon className="w-14 h-14 shrink-0" />
         <div>
           <h3 className="text-[18px] font-semibold tracking-tight text-hv-text">
-            HomeVault
+            {APP_BRAND.name}
           </h3>
           <p className="text-[13.5px] text-hv-muted mt-0.5">
-            Your Personal Home & Asset Command Center — keep household appliances, warranties,
-            maintenance schedules, property specs, and important documents organized in one place.
+            {APP_BRAND.description}
           </p>
         </div>
       </section>

@@ -14,6 +14,7 @@ import {
   Wrench,
 } from 'lucide-react';
 import { useMemo, useState } from 'react';
+import { APP_BRAND } from '@/src/constants';
 import type {
   AssetRecord,
   MaintenanceTaskRecord,
@@ -370,7 +371,7 @@ export function AssetDashboard({
           <div className="max-w-3xl mx-auto bg-hv-card border border-hv-border rounded-2xl p-6 sm:p-8 space-y-6">
             <div className="space-y-1.5">
               <h2 className="text-[18px] font-semibold text-hv-text">
-                Your HomeVault is clean and ready
+                Your {APP_BRAND.name} is clean and ready
               </h2>
               <p className="text-[13px] text-hv-muted">
                 Start building your private household inventory, warranty tracker, and structured document vault in three quick steps.

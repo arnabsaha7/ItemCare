@@ -13,6 +13,7 @@ import { WarrantyCenterView } from '@/src/features/warranties/WarrantyCenterView
 import { MaintenanceCenterView } from '@/src/features/maintenance/MaintenanceCenterView';
 import { SettingsView } from '@/src/features/settings/SettingsView';
 import { ProfileView } from '@/src/features/settings/ProfileView';
+import { APP_BRAND } from '@/src/constants';
 import { useHomeVault } from '@/src/hooks/useHomeVault';
 import { homeVaultService } from '@/src/services/database/homeVaultService';
 import type {
@@ -181,7 +182,7 @@ export default function App() {
         <main className="flex-1 min-w-0 h-full overflow-hidden">
           {loading ? (
             <div className="h-full flex items-center justify-center text-[13px] text-hv-muted">
-              Loading HomeVault local database...
+              Loading {APP_BRAND.name} local database...
             </div>
           ) : error ? (
             <div className="p-6">

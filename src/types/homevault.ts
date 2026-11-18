@@ -1,3 +1,12 @@
+import {
+  APP_PATHS,
+  DOCUMENT_CATEGORIES,
+  HOUSEHOLD_DEFAULTS,
+  THEME_FAMILIES,
+  THEME_NAMES,
+  WARRANTY_TYPES,
+} from '@/src/constants';
+
 export type AppTheme =
   | 'light'
   | 'dark'
@@ -38,8 +47,8 @@ export interface ThemePreset {
 export const THEME_PRESETS: ThemePreset[] = [
   {
     id: 'light',
-    name: 'HomeVault Signature',
-    family: 'HomeVault Signature',
+    name: THEME_NAMES.light,
+    family: THEME_FAMILIES.signature,
     mode: 'light',
     description: 'Neutral cool-stone workspace with crisp white cards and balanced slate ink.',
     palette: {
@@ -64,8 +73,8 @@ export const THEME_PRESETS: ThemePreset[] = [
   },
   {
     id: 'warm-linen',
-    name: 'Warm Linen',
-    family: 'Daylight Editorial',
+    name: THEME_NAMES['warm-linen'],
+    family: THEME_FAMILIES.warmLinen,
     mode: 'light',
     description: 'Soft alabaster paper surfaces with warm ivory cards and deep botanical teal.',
     palette: {
@@ -90,8 +99,8 @@ export const THEME_PRESETS: ThemePreset[] = [
   },
   {
     id: 'nordic-sage',
-    name: 'Nordic Sage',
-    family: 'Daylight Mineral',
+    name: THEME_NAMES['nordic-sage'],
+    family: THEME_FAMILIES.nordicSage,
     mode: 'light',
     description: 'Cool eucalyptus mist workspace with porcelain cards and deep ocean cerulean.',
     palette: {
@@ -116,8 +125,8 @@ export const THEME_PRESETS: ThemePreset[] = [
   },
   {
     id: 'dark',
-    name: 'HomeVault Signature',
-    family: 'HomeVault Signature',
+    name: THEME_NAMES.dark,
+    family: THEME_FAMILIES.signature,
     mode: 'dark',
     description: 'Deep charcoal workspace with graphite surfaces and crisp luminous blue accents.',
     palette: {
@@ -142,8 +151,8 @@ export const THEME_PRESETS: ThemePreset[] = [
   },
   {
     id: 'midnight-navy',
-    name: 'Midnight Navy',
-    family: 'Nocturne Slate',
+    name: THEME_NAMES['midnight-navy'],
+    family: THEME_FAMILIES.midnightNavy,
     mode: 'dark',
     description: 'Deep indigo-slate workspace with elevated cobalt cards and crisp sky highlights.',
     palette: {
@@ -168,8 +177,8 @@ export const THEME_PRESETS: ThemePreset[] = [
   },
   {
     id: 'warm-espresso',
-    name: 'Warm Espresso',
-    family: 'Nocturne Carbon',
+    name: THEME_NAMES['warm-espresso'],
+    family: THEME_FAMILIES.warmEspresso,
     mode: 'dark',
     description: 'Low-glare roasted umber & warm carbon surfaces with rich amber accents.',
     palette: {
@@ -334,11 +343,7 @@ export interface UpsertAssetInput {
   maintenanceInstructions?: string;
 }
 
-export type WarrantyType =
-  | 'Manufacturer'
-  | 'Extended Care'
-  | 'AppleCare+'
-  | 'Retailer Plan';
+export type WarrantyType = (typeof WARRANTY_TYPES)[number];
 
 export interface WarrantyRecord {
   id: string;
@@ -416,15 +421,7 @@ export interface UpsertMaintenanceTaskInput {
   notes: string;
 }
 
-export type DocumentCategory =
-  | 'Invoices'
-  | 'Warranty Certificates'
-  | 'User Manuals'
-  | 'Serial Photos'
-  | 'Service Receipts'
-  | 'Insurance Documents'
-  | 'Property Documents'
-  | 'Other';
+export type DocumentCategory = (typeof DOCUMENT_CATEGORIES)[number];
 
 export type IntegrityStatus = 'verified' | 'modified' | 'missing' | 'builtin';
 
@@ -474,7 +471,7 @@ export function buildStructuredRelativePath(
 ): string {
   const safeName = fileName.replace(/[^a-zA-Z0-9._\- ]/g, '_');
   const folder = category || 'Other';
-  return `Documents/${folder}/${year}/${shortId.slice(0, 8)}_${safeName}`;
+  return `${APP_PATHS.documentsRootFolder}/${folder}/${year}/${shortId.slice(0, 8)}_${safeName}`;
 }
 
 export interface DocumentPageIndex {
@@ -615,12 +612,12 @@ export const DEFAULT_SIDEBAR_GROUPS: SidebarGroupsConfig = {
 };
 
 export const DEFAULT_SETTINGS: AppSettings = {
-  theme: 'light',
-  currency: 'INR',
-  warrantyAlertDays: 30,
+  theme: HOUSEHOLD_DEFAULTS.theme,
+  currency: HOUSEHOLD_DEFAULTS.currency,
+  warrantyAlertDays: HOUSEHOLD_DEFAULTS.warrantyAlertDays,
   notificationsEnabled: true,
-  ownerName: 'Homeowner',
-  residenceName: 'Main Residence',
+  ownerName: HOUSEHOLD_DEFAULTS.ownerName,
+  residenceName: HOUSEHOLD_DEFAULTS.residenceName,
   ownerEmail: '',
   storagePath: '',
   onboardingCompleted: false,
@@ -633,7 +630,9 @@ export function normalizeSettings(raw?: Partial<AppSettings>): AppSettings {
     theme: normalizeTheme(raw?.theme),
     currency: raw?.currency || DEFAULT_SETTINGS.currency,
     warrantyAlertDays:
-      Number.isFinite(days) && days >= 7 && days <= 180
+      Number.isFinite(days) &&
+      days >= HOUSEHOLD_DEFAULTS.minWarrantyAlertDays &&
+      days <= HOUSEHOLD_DEFAULTS.maxWarrantyAlertDays
         ? Math.round(days)
         : DEFAULT_SETTINGS.warrantyAlertDays,
     notificationsEnabled: raw?.notificationsEnabled ?? DEFAULT_SETTINGS.notificationsEnabled,

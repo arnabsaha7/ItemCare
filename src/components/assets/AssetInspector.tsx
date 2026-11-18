@@ -11,6 +11,7 @@ import {
   Trash2,
 } from 'lucide-react';
 import { useState } from 'react';
+import { APP_BRAND } from '@/src/constants';
 import type {
   AssetRecord,
   DocumentWithLinks,
@@ -108,7 +109,7 @@ export function AssetInspector({
         notes: notesVal,
       });
       await sendDesktopNotification(
-        'HomeVault Maintenance Logged',
+        `${APP_BRAND.name} Maintenance Logged`,
         `${task.taskName} for ${asset.name} marked completed.`
       );
       setCompletingTaskId(null);

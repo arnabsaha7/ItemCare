@@ -12,6 +12,12 @@ import {
   X,
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
+import {
+  APP_BRAND,
+  APP_PATHS,
+  BACKUP_CONFIG,
+  HOUSEHOLD_DEFAULTS,
+} from '@/src/constants';
 import type { AppSettings, StorageConfig } from '@/src/types/homevault';
 import { homeVaultService } from '@/src/services/database/homeVaultService';
 
@@ -81,8 +87,8 @@ export function OnboardingModal({
     setError(null);
     try {
       await onComplete({
-        ownerName: ownerName.trim() || 'Homeowner',
-        residenceName: residenceName.trim() || 'Main Residence',
+        ownerName: ownerName.trim() || HOUSEHOLD_DEFAULTS.ownerName,
+        residenceName: residenceName.trim() || HOUSEHOLD_DEFAULTS.residenceName,
         storagePath: storagePath.trim() || undefined,
         loadSample: startMode === 'sample' && assetCount === 0,
       });
@@ -98,7 +104,7 @@ export function OnboardingModal({
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-[2px] p-4"
       role="dialog"
       aria-modal="true"
-      aria-label="HomeVault Getting Started Guide"
+      aria-label={`${APP_BRAND.name} Getting Started Guide`}
     >
       <div className="w-full max-w-2xl bg-hv-card border border-hv-border-strong rounded-2xl shadow-2xl overflow-hidden flex flex-col">
         {/* Header */}
@@ -109,7 +115,7 @@ export function OnboardingModal({
             </div>
             <div>
               <h2 className="text-[16px] font-semibold text-hv-text">
-                Welcome to HomeVault
+                Welcome to {APP_BRAND.name}
               </h2>
               <p className="text-[12px] text-hv-muted">
                 Step {step} of 3 · Offline household asset & document vault
@@ -183,7 +189,7 @@ export function OnboardingModal({
                     type="text"
                     value={residenceName}
                     onChange={(e) => setResidenceName(e.target.value)}
-                    placeholder="e.g. Main Residence"
+                    placeholder={`e.g. ${HOUSEHOLD_DEFAULTS.residenceName}`}
                     className="w-full px-3 py-2 rounded-lg bg-hv-subtle border border-hv-border-strong text-[13px] text-hv-text"
                   />
                 </label>
@@ -198,7 +204,7 @@ export function OnboardingModal({
                         Authorized Document Storage Folder
                       </div>
                       <p className="text-[12px] text-hv-muted mt-0.5">
-                        Choose a safe drive or folder (such as D:\HomeVault) for warranty PDFs, payment slips, and DOCX files instead of keeping everything on C:.
+                        Choose a safe drive or folder (such as {APP_PATHS.defaultVaultFolderExample}) for warranty PDFs, payment slips, and DOCX files instead of keeping everything on C:.
                       </p>
                     </div>
                   </div>
@@ -209,7 +215,7 @@ export function OnboardingModal({
                     type="text"
                     value={storagePath}
                     onChange={(e) => setStoragePath(e.target.value)}
-                    placeholder={storageCfg?.defaultStoragePath || 'D:\\HomeVault\\VaultFiles'}
+                    placeholder={storageCfg?.defaultStoragePath || APP_PATHS.defaultSavePath}
                     className="flex-1 px-3 py-2 rounded-lg bg-hv-card border border-hv-border-strong font-mono text-[12px] text-hv-text"
                   />
                   {isNative && (
@@ -225,10 +231,10 @@ export function OnboardingModal({
                 </div>
 
                 <div className="text-[11.5px] text-hv-muted font-mono bg-hv-card border border-hv-border rounded-lg p-2.5 leading-relaxed">
-                  <div>{storagePath || 'D:\\HomeVault\\VaultFiles'}/</div>
-                  <div className="pl-3">├─ Documents/Invoices/2026/a1b2c3d4_payment_slip.pdf</div>
-                  <div className="pl-3">├─ Documents/Warranty Certificates/2026/...</div>
-                  <div className="pl-3">└─ Backups/</div>
+                  <div>{storagePath || APP_PATHS.defaultSavePath}/</div>
+                  <div className="pl-3">├─ {APP_PATHS.documentsRootFolder}/Invoices/2026/a1b2c3d4_payment_slip.pdf</div>
+                  <div className="pl-3">├─ {APP_PATHS.documentsRootFolder}/Warranty Certificates/2026/...</div>
+                  <div className="pl-3">└─ {APP_PATHS.backupsFolder}/</div>
                 </div>
               </div>
             </div>
@@ -262,7 +268,7 @@ export function OnboardingModal({
                   Tamper &amp; Integrity Tracking
                 </div>
                 <p className="text-[12px] text-hv-muted leading-relaxed">
-                  Every stored file records a SHA-256 fingerprint and modified timestamp so HomeVault alerts you if a file is altered outside the app.
+                  Every stored file records a SHA-256 fingerprint and modified timestamp so {APP_BRAND.name} alerts you if a file is altered outside the app.
                 </p>
               </div>
 
@@ -272,7 +278,7 @@ export function OnboardingModal({
                   Maintenance &amp; Backups
                 </div>
                 <p className="text-[12px] text-hv-muted leading-relaxed">
-                  Schedule recurring filter cleanings, record paint/breaker specs, and export encrypted insurance packs or .hvbackup snapshots.
+                  Schedule recurring filter cleanings, record paint/breaker specs, and export encrypted insurance packs or .{BACKUP_CONFIG.extension} snapshots.
                 </p>
               </div>
             </div>

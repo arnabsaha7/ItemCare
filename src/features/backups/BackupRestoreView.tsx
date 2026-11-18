@@ -7,6 +7,7 @@ import {
   Upload,
 } from 'lucide-react';
 import { useRef, useState } from 'react';
+import { BACKUP_CONFIG } from '@/src/constants';
 import type { BackupHistoryRecord, BackupManifest } from '@/src/types/homevault';
 import { formatBytes, formatDate } from '@/src/utils/format';
 import { homeVaultService } from '@/src/services/database/homeVaultService';
@@ -179,12 +180,12 @@ export function BackupRestoreView({
             className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-hv-elevated hover:bg-hv-hover border border-hv-border-strong text-hv-text text-[13px] font-medium"
           >
             <Upload className="w-4 h-4" />
-            <span>Select .hvbackup File to Inspect</span>
+            <span>Select .{BACKUP_CONFIG.extension} File to Inspect</span>
           </button>
           <input
             ref={fileInputRef}
             type="file"
-            accept=".hvbackup,.zip"
+            accept={BACKUP_CONFIG.accept}
             onChange={(e) => void handleBrowserFileSelected(e)}
             className="hidden"
           />

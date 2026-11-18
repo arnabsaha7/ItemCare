@@ -1,13 +1,13 @@
 [package]
-name = "homevault"
+name = "itemcare"
 version = "1.0.0"
 description = "Your Personal Home & Asset Command Center"
-authors = ["HomeVault Contributors"]
+authors = ["ItemCare Contributors"]
 edition = "2021"
 rust-version = "1.77"
 
 [lib]
-name = "homevault_lib"
+name = "itemcare_lib"
 crate-type = ["staticlib", "cdylib", "rlib"]
 
 [build-dependencies]

@@ -25,7 +25,7 @@
 }
 
 @layer base {
-  /* HomeVault Signature (Light) — default */
+  /* ItemCare Signature (Light) — default */
   :root,
   [data-theme="light"] {
     --hv-bg: #F5F6F8;
@@ -103,7 +103,7 @@
     --hv-danger-btn: #B91C1C;
   }
 
-  /* HomeVault Signature (Dark) */
+  /* ItemCare Signature (Dark) */
   .dark,
   [data-theme="dark"] {
     --hv-bg: #111317;

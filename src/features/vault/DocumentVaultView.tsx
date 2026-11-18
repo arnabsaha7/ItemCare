@@ -12,6 +12,12 @@ import {
   Upload,
 } from 'lucide-react';
 import { useMemo, useRef, useState } from 'react';
+import {
+  APP_BRAND,
+  DOCUMENT_CATEGORIES,
+  SUPPORTED_DOCUMENT_ACCEPT,
+  SUPPORTED_DOCUMENT_EXTENSIONS,
+} from '@/src/constants';
 import type {
   AssetRecord,
   DocumentCategory,
@@ -21,16 +27,7 @@ import type {
 import { formatBytes, formatDate } from '@/src/utils/format';
 import { homeVaultService } from '@/src/services/database/homeVaultService';
 
-const DOC_CATEGORIES: DocumentCategory[] = [
-  'Invoices',
-  'Warranty Certificates',
-  'User Manuals',
-  'Serial Photos',
-  'Service Receipts',
-  'Insurance Documents',
-  'Property Documents',
-  'Other',
-];
+const DOC_CATEGORIES: readonly DocumentCategory[] = DOCUMENT_CATEGORIES;
 
 interface DocumentVaultViewProps {
   documents: DocumentWithLinks[];
@@ -220,7 +217,7 @@ export function DocumentVaultView({
             ref={fileInputRef}
             type="file"
             multiple
-            accept=".pdf,.jpg,.jpeg,.png,.docx,.xlsx,.txt"
+            accept={SUPPORTED_DOCUMENT_ACCEPT}
             onChange={(e) => void handleBrowserFiles(e.target.files)}
             className="hidden"
           />
@@ -234,7 +231,7 @@ export function DocumentVaultView({
             <span>
               File integrity notice:{' '}
               {integritySummary.modified > 0 &&
-                `${integritySummary.modified} document(s) modified outside HomeVault`}
+                `${integritySummary.modified} document(s) modified outside ${APP_BRAND.name}`}
               {integritySummary.modified > 0 && integritySummary.missing > 0 && ' · '}
               {integritySummary.missing > 0 && `${integritySummary.missing} missing from storage`}
             </span>
@@ -273,10 +270,10 @@ export function DocumentVaultView({
         }`}
       >
         <div className="text-[13px] font-medium text-hv-text">
-          Drop PDF manuals, invoices, or photos here to import & index into HomeVault
+          Drop PDF manuals, invoices, or photos here to import & index into {APP_BRAND.name}
         </div>
         <div className="text-[11.5px] text-hv-muted mt-0.5">
-          Supported formats: PDF, JPG, JPEG, PNG, DOCX, XLSX, TXT
+          Supported formats: {SUPPORTED_DOCUMENT_EXTENSIONS.map((e) => e.toUpperCase()).join(', ')}
         </div>
       </div>
 

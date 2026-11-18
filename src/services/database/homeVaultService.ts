@@ -24,6 +24,11 @@ import type {
   UtilityRecord,
   WarrantyRecord,
 } from '@/src/types/homevault';
+import {
+  APP_BRAND,
+  BACKUP_CONFIG,
+  SUPPORTED_DOCUMENT_EXTENSIONS,
+} from '@/src/constants';
 import { normalizeSettings, normalizeTheme } from '@/src/types/homevault';
 import { invokeTauri, isTauriRuntime, pickNativeDirectory, pickNativeFile, saveNativeFile } from '@/src/services/tauri/bridge';
 import { browserPreviewAdapter, getPreviewBlob } from './browserPreviewAdapter';
@@ -119,11 +124,11 @@ export const homeVaultService = {
   ): Promise<DocumentWithLinks | null> {
     if (!isTauriRuntime()) return null;
     const sourcePath = await pickNativeFile({
-      title: 'Import Document into HomeVault',
+      title: `Import Document into ${APP_BRAND.name}`,
       filters: [
         {
           name: 'Supported Vault Files',
-          extensions: ['pdf', 'jpg', 'jpeg', 'png', 'docx', 'xlsx', 'txt'],
+          extensions: [...SUPPORTED_DOCUMENT_EXTENSIONS],
         },
       ],
     });
@@ -263,7 +268,7 @@ export const homeVaultService = {
     if (isTauriRuntime()) {
       const dest = await saveNativeFile({
         title: 'Save Encrypted Insurance & Moving Package',
-        defaultPath: `HomeVault_Insurance_Pack.zip`,
+        defaultPath: BACKUP_CONFIG.defaultInsurancePackFilename,
         filters: [{ name: 'Encrypted ZIP Archive', extensions: ['zip'] }],
       });
       if (!dest) return null;
@@ -282,9 +287,14 @@ export const homeVaultService = {
   async createBackup(): Promise<BackupHistoryRecord | null> {
     if (isTauriRuntime()) {
       const dest = await saveNativeFile({
-        title: 'Save Full HomeVault Backup Archive',
-        defaultPath: `HomeVault_Backup.hvbackup`,
-        filters: [{ name: 'HomeVault Backup', extensions: ['hvbackup', 'zip'] }],
+        title: `Save Full ${APP_BRAND.name} Backup Archive`,
+        defaultPath: BACKUP_CONFIG.defaultBackupFilename,
+        filters: [
+          {
+            name: BACKUP_CONFIG.filterName,
+            extensions: BACKUP_CONFIG.filterExtensions,
+          },
+        ],
       });
       if (!dest) return null;
       return invokeTauri<BackupHistoryRecord>('create_backup', { destinationPath: dest });
@@ -303,8 +313,13 @@ export const homeVaultService = {
   async validateBackupNative(): Promise<{ path: string; manifest: BackupManifest } | null> {
     if (!isTauriRuntime()) return null;
     const path = await pickNativeFile({
-      title: 'Select HomeVault Backup Archive',
-      filters: [{ name: 'HomeVault Backup', extensions: ['hvbackup', 'zip'] }],
+      title: `Select ${APP_BRAND.name} Backup Archive`,
+      filters: [
+        {
+          name: BACKUP_CONFIG.filterName,
+          extensions: BACKUP_CONFIG.filterExtensions,
+        },
+      ],
     });
     if (!path) return null;
     const manifest = await invokeTauri<BackupManifest>('validate_backup_file', { archivePath: path });

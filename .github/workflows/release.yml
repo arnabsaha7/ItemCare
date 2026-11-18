@@ -5,6 +5,11 @@ on:
     tags:
       - "v*"
   workflow_dispatch:
+    inputs:
+      tag:
+        description: "Release tag (e.g. v1.0.0) — leave blank when triggered by tag push"
+        required: false
+        type: string
 
 permissions:
   contents: write
@@ -39,20 +44,23 @@ jobs:
       - name: Install frontend dependencies
         run: npm ci
 
+      - name: Typecheck frontend
+        run: npx tsc --noEmit
+
       - name: Build and publish release
         uses: tauri-apps/tauri-action@v0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tagName: ${{ github.ref_name }}
-          releaseName: "ItemCare ${{ github.ref_name }}"
+          tagName: ${{ inputs.tag || github.ref_name }}
+          releaseName: "ItemCare ${{ inputs.tag || github.ref_name }}"
           releaseBody: |
-            ## ItemCare ${{ github.ref_name }}
+            ## ItemCare ${{ inputs.tag || github.ref_name }}
 
             Download the Windows installer from the assets below:
 
             - `.msi` (standard Windows Installer)
-            - `.exe` (setup executable)
+            - `.exe` (NSIS setup executable)
 
             > Builds are not code-signed yet, so Windows SmartScreen may show a warning on first launch. Click **More info → Run anyway** to continue.
           releaseDraft: true

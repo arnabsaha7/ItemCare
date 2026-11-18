@@ -15,6 +15,7 @@ import {
   Wrench,
 } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
+import { HOUSEHOLD_DEFAULTS } from '@/src/constants';
 import type { NavSection, SidebarGroupsConfig, SmartViewType } from '@/src/types/homevault';
 
 interface SidebarProps {
@@ -93,8 +94,8 @@ export function Sidebar({
   const isSettingsGroupActive =
     activeSection === 'settings' || activeSection === 'backups' || activeSection === 'about';
 
-  const displayOwnerName = ownerName?.trim() || 'Arnab';
-  const displayResidenceName = residenceName?.trim() || 'Main Residence';
+  const displayOwnerName = ownerName?.trim() || HOUSEHOLD_DEFAULTS.ownerName;
+  const displayResidenceName = residenceName?.trim() || HOUSEHOLD_DEFAULTS.residenceName;
 
   const initials = displayOwnerName
     .split(/\s+/)
@@ -203,7 +204,7 @@ export function Sidebar({
             {sidebarGroups.mainSpaces && (
               <div>
                 <div className="px-2 pb-1 text-[11px] font-semibold tracking-wide text-hv-muted">
-                  Spaces · Main Residence
+                  Spaces · {HOUSEHOLD_DEFAULTS.residenceName}
                 </div>
                 <div className="space-y-0.5">
                   {mainSpaces.map((space) => (

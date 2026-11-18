@@ -16,6 +16,12 @@ import {
   Sun,
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
+import {
+  APP_BRAND,
+  APP_PATHS,
+  HOUSEHOLD_DEFAULTS,
+  THEME_FAMILY_SIGNATURE,
+} from '@/src/constants';
 import type {
   AppSettings,
   BackupHistoryRecord,
@@ -97,7 +103,12 @@ export function SettingsView({
 
   const commitAlertDays = () => {
     const parsed = Math.round(Number(alertDaysInput));
-    const clamped = Number.isFinite(parsed) ? Math.min(180, Math.max(7, parsed)) : 30;
+    const clamped = Number.isFinite(parsed)
+      ? Math.min(
+          HOUSEHOLD_DEFAULTS.maxWarrantyAlertDays,
+          Math.max(HOUSEHOLD_DEFAULTS.minWarrantyAlertDays, parsed)
+        )
+      : HOUSEHOLD_DEFAULTS.warrantyAlertDays;
     setAlertDaysInput(String(clamped));
     if (clamped !== settings.warrantyAlertDays) {
       void applySettings({ warrantyAlertDays: clamped });
@@ -106,7 +117,7 @@ export function SettingsView({
 
   const handleTestNotification = async () => {
     await sendDesktopNotification(
-      'HomeVault Reminder Active',
+      `${APP_BRAND.name} Reminder Active`,
       'Warranty expiry and maintenance notifications are configured locally.'
     );
     setNotifFeedback('Notification dispatched via native desktop / browser channel.');
@@ -136,7 +147,7 @@ export function SettingsView({
     },
     {
       group: 'Application',
-      items: [{ id: 'about', label: 'About HomeVault', icon: Info }],
+      items: [{ id: 'about', label: `About ${APP_BRAND.name}`, icon: Info }],
     },
   ];
 
@@ -155,7 +166,7 @@ export function SettingsView({
             Settings
           </h1>
           <p className="text-[12px] text-hv-muted mt-0.5">
-            HomeVault Configuration
+            {APP_BRAND.name} Configuration
           </p>
         </div>
 
@@ -388,7 +399,7 @@ export function SettingsView({
                     <span>Move existing managed files when changing folder</span>
                   </label>
                   <span className="text-[11.5px] font-mono text-hv-muted">
-                    Layout: Documents/&lt;Category&gt;/&lt;Year&gt;/&lt;id&gt;_file
+                    Layout: {APP_PATHS.documentsRootFolder}/&lt;Category&gt;/&lt;Year&gt;/&lt;id&gt;_file
                   </span>
                 </div>
 
@@ -467,7 +478,7 @@ export function SettingsView({
                   Appearance
                 </h2>
                 <p className="text-[13px] text-hv-muted mt-0.5">
-                  Choose a calibrated surface theme. HomeVault Signature is available in both Light and Dark modes alongside two curated daylight and dark-room palettes, tuned for WCAG AA readability.
+                  Choose a calibrated surface theme. {THEME_FAMILY_SIGNATURE} is available in both Light and Dark modes alongside two curated daylight and dark-room palettes, tuned for WCAG AA readability.
                 </p>
               </div>
 
@@ -558,13 +569,13 @@ export function SettingsView({
 
                 <SettingRow
                   title="Expiring Soon Threshold"
-                  description="Flag warranties as Expiring Soon when fewer than this many days remain (7–180)."
+                  description={`Flag warranties as Expiring Soon when fewer than this many days remain (${HOUSEHOLD_DEFAULTS.minWarrantyAlertDays}–${HOUSEHOLD_DEFAULTS.maxWarrantyAlertDays}).`}
                 >
                   <div className="flex items-center gap-2">
                     <input
                       type="number"
-                      min={7}
-                      max={180}
+                      min={HOUSEHOLD_DEFAULTS.minWarrantyAlertDays}
+                      max={HOUSEHOLD_DEFAULTS.maxWarrantyAlertDays}
                       value={alertDaysInput}
                       onChange={(e) => setAlertDaysInput(e.target.value)}
                       onBlur={commitAlertDays}
@@ -639,7 +650,7 @@ export function SettingsView({
                     },
                     {
                       key: 'mainSpaces',
-                      title: 'Spaces · Main Residence',
+                      title: `Spaces · ${HOUSEHOLD_DEFAULTS.residenceName}`,
                       description:
                         'Living Room, Kitchen, Master Bedroom, Utility & Garage',
                     },
@@ -729,7 +740,7 @@ function ThemePresetCard({
   onSelect: () => void;
 }) {
   const { palette } = preset;
-  const isSignature = preset.family === 'HomeVault Signature';
+  const isSignature = preset.family === THEME_FAMILY_SIGNATURE;
   const modeLabel = preset.mode === 'light' ? 'Light' : 'Dark';
 
   return (

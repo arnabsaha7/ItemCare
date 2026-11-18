@@ -1,5 +1,6 @@
 import { ImagePlus, X } from 'lucide-react';
 import { useState } from 'react';
+import { APP_BRAND, WARRANTY_TYPES } from '@/src/constants';
 import type {
   AssetRecord,
   AssetStatus,
@@ -175,7 +176,7 @@ export function AssetFormModal({
               {editingAsset ? `Edit ${editingAsset.name}` : 'Add Household Asset'}
             </h2>
             <p className="text-[12px] text-hv-muted">
-              All records are stored locally in your HomeVault database.
+              All records are stored locally in your {APP_BRAND.name} database.
             </p>
           </div>
           <button
@@ -473,10 +474,11 @@ export function AssetFormModal({
                     onChange={(e) => setWarrantyType(e.target.value as WarrantyType)}
                     className={inputCls}
                   >
-                    <option value="Manufacturer">Manufacturer</option>
-                    <option value="Extended Care">Extended Care</option>
-                    <option value="AppleCare+">AppleCare+</option>
-                    <option value="Retailer Plan">Retailer Plan</option>
+                    {WARRANTY_TYPES.map((wt) => (
+                      <option key={wt} value={wt}>
+                        {wt}
+                      </option>
+                    ))}
                   </select>
                 </Field>
                 <Field label="Extended Details">

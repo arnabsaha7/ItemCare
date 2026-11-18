@@ -15,6 +15,7 @@ import {
 } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { HomeVaultIcon } from '@/src/components/shared/HomeVaultIcon';
+import { APP_BRAND } from '@/src/constants';
 import { homeVaultService } from '@/src/services/database/homeVaultService';
 import {
   isTauriRuntime,
@@ -160,11 +161,11 @@ export function TitleBar({
       {/* Left: App Icon & Title */}
       <div className="hv-titlebar-brand" data-tauri-drag-region>
         <HomeVaultIcon className="w-5 h-5 shrink-0" />
-        <span className="hv-titlebar-title">HomeVault</span>
+        <span className="hv-titlebar-title">{APP_BRAND.name}</span>
       </div>
 
       {/* Center: Inline Search Input & Anchored Results Dropdown */}
-      <div ref={wrapRef} className="hv-titlebar-search-wrap">
+      <div ref={wrapRef} data-tauri-drag-region className="hv-titlebar-search-wrap">
         <div className={`hv-titlebar-search-box ${isFocused ? 'is-focused' : ''}`}>
           <Search className="w-4 h-4 shrink-0 text-hv-accent-fg" />
           <input
@@ -312,7 +313,7 @@ export function TitleBar({
       </div>
 
       {/* Right: Layout Toggles, Theme & Native Window Controls */}
-      <div className="hv-titlebar-actions">
+      <div data-tauri-drag-region className="hv-titlebar-actions">
         <button
           type="button"
           onClick={onToggleSidebar}
