@@ -4,11 +4,16 @@
 
 <img src="https://capsule-render.vercel.app/api?type=waving&color=0:1F7A6D,100:2EA88F&height=220&section=header&text=ItemCare&fontSize=72&fontColor=ffffff&fontAlignY=38&animation=fadeIn&desc=Your%20home.%20Your%20assets.%20Your%20control.&descAlignY=60&descSize=18" alt="ItemCare banner" width="100%" />
 
-### 🏡 A local-first home & asset command center
+### 🏡 A local-first home & asset command center for Windows
 
 **Manage your home, belongings, documents, and household records in one place, with every byte stored on your own device.**
 
 <br />
+
+<a href="https://github.com/arnabsaha7/ItemCare/releases/latest"><img src="https://img.shields.io/github/v/release/arnabsaha7/ItemCare?style=for-the-badge&color=1F7A6D&labelColor=0d1117" alt="Latest release" /></a>
+<img src="https://img.shields.io/badge/platform-Windows-0078D4?style=for-the-badge&logo=windows&logoColor=white&labelColor=0d1117" alt="Windows" />
+<img src="https://img.shields.io/badge/local--first-100%25-2ea44f?style=for-the-badge&labelColor=0d1117" alt="Local first" />
+
 <img src="https://img.shields.io/badge/Tauri-2-24C8DB?style=flat-square&logo=tauri&logoColor=white" alt="Tauri 2" />
 <img src="https://img.shields.io/badge/Rust-000000?style=flat-square&logo=rust&logoColor=white" alt="Rust" />
 <img src="https://img.shields.io/badge/React-61DAFB?style=flat-square&logo=react&logoColor=black" alt="React" />
@@ -18,6 +23,7 @@
 
 <br /><br />
 
+[**Download**](#-download) ·
 [**Features**](#-features) ·
 [**Screenshots**](#-screenshots) ·
 [**Quick Start**](#-quick-start) ·
@@ -68,6 +74,20 @@
 
 ---
 
+## 📥 Download
+
+Grab the latest Windows installer from the [**Releases page**](https://github.com/arnabsaha7/ItemCare/releases/latest).
+
+| File | Description |
+|---|---|
+| `.msi` | Standard Windows Installer |
+| `.exe` | Setup executable |
+
+> [!NOTE]
+> Builds are not code-signed yet, so Windows SmartScreen may show a warning on first launch. Click **More info → Run anyway** to continue.
+
+---
+
 ## 💡 Why ItemCare?
 
 Receipts, warranties, manuals, and household records usually end up scattered across folders, spreadsheets, and a dozen apps. **ItemCare brings it all into one organized workspace, and keeps it private.**
@@ -91,7 +111,7 @@ Local-first by design: SQLite plus local attachment storage. No cloud backend re
     <td width="50%" valign="top">
 
 **⚡ Native and fast**<br />
-Built on Tauri 2 and Rust for a lightweight cross-platform runtime.
+Built on Tauri 2 and Rust for a lightweight native Windows app.
 
 </td>
     <td width="50%" valign="top">
@@ -118,7 +138,7 @@ A typed React frontend talking to native Rust services over a typed bridge.
 | 🗄️ | **Local Database** | Structured persistence powered by SQLite |
 | 🔏 | **Encrypted Archives** | AES-256 ZIP support for archive handling |
 | 🧾 | **PDF Generation** | Generate PDF documents |
-| 🖥️ | **Native Runtime** | Cross-platform client powered by Tauri 2 |
+| 🖥️ | **Native Runtime** | Windows desktop app powered by Tauri 2 |
 | 🌐 | **Browser Preview** | Browser-compatible persistence for fast frontend development |
 
 ---
@@ -202,7 +222,8 @@ Database schema changes are managed through SQLx migrations:
 
 ```text
 src-tauri/src/database/migrations/
-└── 001_initial_schema.sql
+├── 001_initial_schema.sql
+└── 002_storage_integrity.sql
 ```
 
 ---
@@ -213,8 +234,8 @@ src-tauri/src/database/migrations/
 
 - [Node.js](https://nodejs.org/) 20+ and npm
 - [Rust](https://www.rust-lang.org/tools/install) stable toolchain
-- System build tools for your platform
-- Web rendering runtime (e.g. WebView2 on Windows)
+- Microsoft C++ Build Tools (the "Desktop development with C++" workload)
+- WebView2 runtime (included with Windows 10/11)
 
 ### Install & run
 
@@ -242,6 +263,8 @@ npm run tauri dev
 npm run tauri build
 ```
 
+Installers are generated in `src-tauri/target/release/bundle/`.
+
 ### Commands
 
 | Command | Description |
@@ -255,12 +278,12 @@ npm run tauri build
 
 ## 🗺️ Roadmap
 
-- [x] Desktop app (Windows / macOS / Linux) via Tauri 2
+- [x] Windows desktop app via Tauri 2
 - [x] Local SQLite database with SQLx migrations
 - [x] Local vault for attachments
 - [x] AES-256 encrypted ZIP archives
 - [x] PDF generation
-- [ ] Mobile apps (Android / iOS)
+- [x] Automated Windows releases with GitHub Actions
 
 Have an idea? [Open an issue](https://github.com/arnabsaha7/ItemCare/issues) and let's talk.
 
@@ -270,11 +293,7 @@ Have an idea? [Open an issue](https://github.com/arnabsaha7/ItemCare/issues) and
 
 | Platform | Status |
 |---|:-:|
-| 🪟 Windows | ✅ Supported |
-| 🍎 macOS | ✅ Supported |
-| 🐧 Linux | ✅ Supported |
-| 🤖 Android | 🕒 Planned |
-| 📱 iOS | 🕒 Planned |
+| 🪟 Windows 10 / 11 | ✅ Supported |
 
 ---
 
