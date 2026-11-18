@@ -1,0 +1,201 @@
+.hv-titlebar {
+  position: relative;
+  z-index: 40;
+  height: 48px;
+  flex-shrink: 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(280px, 520px) minmax(0, 1fr);
+  align-items: center;
+  gap: 16px;
+  padding: 0 10px 0 16px;
+  background-color: var(--hv-sidebar);
+  border-bottom: 1px solid var(--hv-border);
+  user-select: none;
+  -webkit-app-region: drag;
+}
+
+.hv-titlebar-brand {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  min-width: 0;
+}
+
+.hv-titlebar-title {
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--hv-text-primary);
+  white-space: nowrap;
+}
+
+.hv-titlebar-search-wrap {
+  position: relative;
+  width: 100%;
+  -webkit-app-region: no-drag;
+}
+
+.hv-titlebar-search-box {
+  width: 100%;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 0 10px 0 12px;
+  border-radius: 8px;
+  background-color: var(--hv-card);
+  border: 1px solid var(--hv-border);
+  color: var(--hv-text-secondary);
+  transition: border-color 150ms ease, background-color 150ms ease, box-shadow 150ms ease;
+}
+
+.hv-titlebar-search-box:hover {
+  background-color: var(--hv-card);
+  border-color: color-mix(in srgb, var(--hv-accent-fg) 45%, transparent);
+}
+
+.hv-titlebar-search-box.is-focused {
+  background-color: var(--hv-card);
+  border-color: var(--hv-accent-fg);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--hv-accent-fg) 18%, transparent);
+}
+
+.hv-titlebar-search-input {
+  flex: 1;
+  min-width: 0;
+  background: transparent;
+  border: none;
+  outline: none;
+  font-size: 13px;
+  color: var(--hv-text-primary);
+}
+
+.hv-titlebar-search-input::placeholder {
+  color: var(--hv-text-secondary);
+}
+
+.hv-titlebar-search-clear {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 3px;
+  border-radius: 5px;
+  color: var(--hv-text-secondary);
+  cursor: pointer;
+}
+
+.hv-titlebar-search-clear:hover {
+  background-color: var(--hv-hover);
+  color: var(--hv-text-primary);
+}
+
+.hv-titlebar-search-kbd {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  padding: 2px 6px;
+  border-radius: 5px;
+  background-color: var(--hv-bg);
+  color: var(--hv-text-secondary);
+  border: 1px solid var(--hv-border);
+  flex-shrink: 0;
+}
+
+.hv-titlebar-search-dropdown {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  width: 100%;
+  background-color: var(--hv-card);
+  border: 1px solid var(--hv-border-strong);
+  border-radius: 12px;
+  box-shadow: 0 14px 36px rgba(15, 23, 42, 0.16);
+  overflow: hidden;
+  z-index: 60;
+}
+
+.dark .hv-titlebar-search-dropdown {
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.48);
+}
+
+.hv-titlebar-search-results {
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.hv-titlebar-search-hit {
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--hv-border);
+  transition: background-color 120ms ease;
+}
+
+.hv-titlebar-search-hit:last-child {
+  border-bottom: none;
+}
+
+.hv-titlebar-search-hit.is-active,
+.hv-titlebar-search-hit:hover {
+  background-color: color-mix(in srgb, var(--hv-accent-fg) 9%, transparent);
+}
+
+.hv-titlebar-actions {
+  -webkit-app-region: no-drag;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 4px;
+}
+
+.hv-titlebar-icon-btn {
+  height: 32px;
+  width: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 7px;
+  color: var(--hv-text-secondary);
+  transition: background-color 140ms ease, color 140ms ease;
+}
+
+.hv-titlebar-icon-btn:hover {
+  background-color: var(--hv-hover);
+  color: var(--hv-text-primary);
+}
+
+.hv-titlebar-icon-btn.is-active {
+  background-color: var(--hv-hover);
+  color: var(--hv-text-primary);
+}
+
+.hv-titlebar-icon-btn:focus-visible,
+.hv-titlebar-win-btn:focus-visible {
+  outline: 2px solid var(--hv-accent-fg);
+  outline-offset: -1px;
+}
+
+.hv-titlebar-divider {
+  width: 1px;
+  height: 18px;
+  margin: 0 4px;
+  background-color: var(--hv-border);
+}
+
+.hv-titlebar-win-btn {
+  height: 32px;
+  width: 38px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 7px;
+  color: var(--hv-text-secondary);
+  transition: background-color 140ms ease, color 140ms ease;
+}
+
+.hv-titlebar-win-btn:hover {
+  background-color: var(--hv-hover);
+  color: var(--hv-text-primary);
+}
+
+.hv-titlebar-win-btn.is-close:hover {
+  background-color: #dc2626;
+  color: #ffffff;
+}

@@ -1,0 +1,40 @@
+[package]
+name = "homevault"
+version = "1.0.0"
+description = "Your Personal Home & Asset Command Center"
+authors = ["HomeVault Contributors"]
+edition = "2021"
+rust-version = "1.77"
+
+[lib]
+name = "homevault_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+tauri = { version = "2", features = ["protocol-asset"] }
+tauri-plugin-dialog = "2"
+tauri-plugin-fs = "2"
+tauri-plugin-notification = "2"
+tauri-plugin-clipboard-manager = "2"
+tauri-plugin-opener = "2"
+tauri-plugin-store = "2"
+tauri-plugin-window-state = "2"
+
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+tokio = { version = "1", features = ["full"] }
+sqlx = { version = "0.8", features = ["runtime-tokio", "sqlite", "uuid", "chrono", "migrate"] }
+uuid = { version = "1", features = ["v4", "serde"] }
+chrono = { version = "0.4", features = ["serde"] }
+thiserror = "2"
+
+# Archive creation & authenticated AES-256 encryption
+zip = { version = "2", features = ["aes-crypto", "deflate"] }
+# PDF valuation report generation
+printpdf = "0.7"
+# Integrity verification for backups
+sha2 = "0.10"
+hex = "0.4"

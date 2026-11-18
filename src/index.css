@@ -1,0 +1,210 @@
+@import "tailwindcss";
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme inline {
+  --color-hv-bg: var(--hv-bg);
+  --color-hv-sidebar: var(--hv-sidebar);
+  --color-hv-card: var(--hv-card);
+  --color-hv-subtle: var(--hv-subtle);
+  --color-hv-elevated: var(--hv-elevated);
+  --color-hv-hover: var(--hv-hover);
+  --color-hv-text: var(--hv-text-primary);
+  --color-hv-muted: var(--hv-text-secondary);
+  --color-hv-accent: var(--hv-accent);
+  --color-hv-accent-hover: var(--hv-accent-hover);
+  --color-hv-accent-fg: var(--hv-accent-fg);
+  --color-hv-border: var(--hv-border);
+  --color-hv-border-strong: var(--hv-border-strong);
+  --color-hv-success: var(--hv-success);
+  --color-hv-warning: var(--hv-warning);
+  --color-hv-danger: var(--hv-danger);
+  --color-hv-info: var(--hv-info);
+  --color-hv-success-btn: var(--hv-success-btn);
+  --color-hv-warning-btn: var(--hv-warning-btn);
+  --color-hv-danger-btn: var(--hv-danger-btn);
+}
+
+@layer base {
+  /* HomeVault Signature (Light) — default */
+  :root,
+  [data-theme="light"] {
+    --hv-bg: #F5F6F8;
+    --hv-sidebar: #ECEEF2;
+    --hv-card: #FFFFFF;
+    --hv-subtle: #F8F9FB;
+    --hv-surface-subtle: #F8F9FB;
+    --hv-elevated: #EEF1F6;
+    --hv-hover: #E3E7EE;
+    --hv-text-primary: #1B1D21;
+    --hv-text-secondary: #525866;
+    --hv-accent: #2563EB;
+    --hv-accent-hover: #1D4ED8;
+    --hv-accent-fg: #1D4ED8;
+    --hv-border: #D9DEE6;
+    --hv-border-strong: #C2C9D6;
+    --hv-success: #166534;
+    --hv-warning: #92400E;
+    --hv-danger: #B91C1C;
+    --hv-info: #0369A1;
+    --hv-success-btn: #166534;
+    --hv-warning-btn: #B45309;
+    --hv-danger-btn: #B91C1C;
+    --font-sans: 'Plus Jakarta Sans', 'Segoe UI Variable', 'Segoe UI', system-ui, -apple-system, sans-serif;
+    --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  }
+
+  /* Light 2: Warm Linen */
+  [data-theme="warm-linen"] {
+    --hv-bg: #F5F2EB;
+    --hv-sidebar: #EAE4D8;
+    --hv-card: #FFFDF9;
+    --hv-subtle: #F2EDE3;
+    --hv-surface-subtle: #F2EDE3;
+    --hv-elevated: #EAE3D5;
+    --hv-hover: #DFD7C7;
+    --hv-text-primary: #1F1D19;
+    --hv-text-secondary: #57524A;
+    --hv-accent: #0F766E;
+    --hv-accent-hover: #115E59;
+    --hv-accent-fg: #0D655E;
+    --hv-border: #DCD4C6;
+    --hv-border-strong: #C5BBAE;
+    --hv-success: #166534;
+    --hv-warning: #92400E;
+    --hv-danger: #B91C1C;
+    --hv-info: #0369A1;
+    --hv-success-btn: #166534;
+    --hv-warning-btn: #B45309;
+    --hv-danger-btn: #B91C1C;
+  }
+
+  /* Light 3: Nordic Sage */
+  [data-theme="nordic-sage"] {
+    --hv-bg: #EDF2F1;
+    --hv-sidebar: #E1E9E7;
+    --hv-card: #FFFFFF;
+    --hv-subtle: #F4F7F6;
+    --hv-surface-subtle: #F4F7F6;
+    --hv-elevated: #E6EEEC;
+    --hv-hover: #D6E2DF;
+    --hv-text-primary: #13201E;
+    --hv-text-secondary: #465955;
+    --hv-accent: #0E7490;
+    --hv-accent-hover: #155E75;
+    --hv-accent-fg: #155E75;
+    --hv-border: #CFDAD7;
+    --hv-border-strong: #B5C6C1;
+    --hv-success: #166534;
+    --hv-warning: #92400E;
+    --hv-danger: #B91C1C;
+    --hv-info: #0369A1;
+    --hv-success-btn: #166534;
+    --hv-warning-btn: #B45309;
+    --hv-danger-btn: #B91C1C;
+  }
+
+  /* HomeVault Signature (Dark) */
+  .dark,
+  [data-theme="dark"] {
+    --hv-bg: #111317;
+    --hv-sidebar: #16191E;
+    --hv-card: #1C2026;
+    --hv-subtle: #181C22;
+    --hv-surface-subtle: #181C22;
+    --hv-elevated: #232830;
+    --hv-hover: #2B313B;
+    --hv-text-primary: #F1F3F5;
+    --hv-text-secondary: #A6B0BF;
+    --hv-accent: #2563EB;
+    --hv-accent-hover: #1D4ED8;
+    --hv-accent-fg: #60A5FA;
+    --hv-border: #2B313B;
+    --hv-border-strong: #3B4352;
+    --hv-success: #4ADE80;
+    --hv-warning: #FBBF24;
+    --hv-danger: #F87171;
+    --hv-info: #38BDF8;
+    --hv-success-btn: #166534;
+    --hv-warning-btn: #B45309;
+    --hv-danger-btn: #B91C1C;
+  }
+
+  /* Dark 2: Midnight Navy */
+  [data-theme="midnight-navy"] {
+    --hv-bg: #0B111E;
+    --hv-sidebar: #101829;
+    --hv-card: #162033;
+    --hv-subtle: #121B2D;
+    --hv-surface-subtle: #121B2D;
+    --hv-elevated: #1E2B44;
+    --hv-hover: #263656;
+    --hv-text-primary: #F1F5FB;
+    --hv-text-secondary: #A6B5CC;
+    --hv-accent: #2563EB;
+    --hv-accent-hover: #1D4ED8;
+    --hv-accent-fg: #7CC4FA;
+    --hv-border: #25334C;
+    --hv-border-strong: #364A6D;
+    --hv-success: #4ADE80;
+    --hv-warning: #FBBF24;
+    --hv-danger: #F87171;
+    --hv-info: #38BDF8;
+    --hv-success-btn: #166534;
+    --hv-warning-btn: #B45309;
+    --hv-danger-btn: #B91C1C;
+  }
+
+  /* Dark 3: Warm Espresso */
+  [data-theme="warm-espresso"] {
+    --hv-bg: #141210;
+    --hv-sidebar: #1B1815;
+    --hv-card: #231F1B;
+    --hv-subtle: #1E1A17;
+    --hv-surface-subtle: #1E1A17;
+    --hv-elevated: #2C2722;
+    --hv-hover: #37302A;
+    --hv-text-primary: #F5F1EB;
+    --hv-text-secondary: #BCB3A6;
+    --hv-accent: #B45309;
+    --hv-accent-hover: #92400E;
+    --hv-accent-fg: #FBBF24;
+    --hv-border: #342E28;
+    --hv-border-strong: #4A4139;
+    --hv-success: #4ADE80;
+    --hv-warning: #FBBF24;
+    --hv-danger: #F87171;
+    --hv-info: #38BDF8;
+    --hv-success-btn: #166534;
+    --hv-warning-btn: #B45309;
+    --hv-danger-btn: #B91C1C;
+  }
+
+  html,
+  body,
+  #root {
+    height: 100%;
+    font-family: var(--font-sans);
+    background-color: var(--hv-bg);
+    color: var(--hv-text-primary);
+  }
+
+  .tabular-nums {
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+/* Custom sleek Fluent scrollbars */
+::-webkit-scrollbar {
+  width: 7px;
+  height: 7px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: color-mix(in srgb, var(--hv-text-secondary) 28%, transparent);
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: color-mix(in srgb, var(--hv-text-secondary) 48%, transparent);
+}
