@@ -20,6 +20,7 @@ src-tauri/gen/
 !.env.example
 *.pem
 *.key
+.env.example
 
 # ─── Logs ─────────────────────────────────────
 logs/
