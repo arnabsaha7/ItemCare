@@ -4,7 +4,10 @@ use chrono::Utc;
 use printpdf::*;
 use std::io::BufWriter;
 
-pub fn generate_valuation_pdf_bytes(assets: &[AssetRecord], scope_label: &str) -> AppResult<Vec<u8>> {
+pub fn generate_valuation_pdf_bytes(
+    assets: &[AssetRecord],
+    scope_label: &str,
+) -> AppResult<Vec<u8>> {
     let (doc, page1, layer1) = PdfDocument::new(
         "HomeVault Insurance Valuation Report",
         Mm(210.0),
@@ -23,7 +26,13 @@ pub fn generate_valuation_pdf_bytes(assets: &[AssetRecord], scope_label: &str) -
     let total_tco: f64 = assets.iter().map(|a| a.total_cost_of_ownership).sum();
 
     let mut current_layer = doc.get_page(page1).get_layer(layer1);
-    current_layer.use_text("HomeVault — Insurance & Moving Valuation Report", 16.0, Mm(18.0), Mm(276.0), &font_bold);
+    current_layer.use_text(
+        "HomeVault — Insurance & Moving Valuation Report",
+        16.0,
+        Mm(18.0),
+        Mm(276.0),
+        &font_bold,
+    );
     current_layer.use_text(
         format!(
             "Scope: {}  |  Generated: {}  |  Assets: {}",
@@ -37,7 +46,10 @@ pub fn generate_valuation_pdf_bytes(assets: &[AssetRecord], scope_label: &str) -
         &font_regular,
     );
     current_layer.use_text(
-        format!("Total Insured Valuation: INR {:.2}   |   Total Cost of Ownership: INR {:.2}", total_val, total_tco),
+        format!(
+            "Total Insured Valuation: INR {:.2}   |   Total Cost of Ownership: INR {:.2}",
+            total_val, total_tco
+        ),
         10.5,
         Mm(18.0),
         Mm(260.0),
@@ -66,7 +78,13 @@ pub fn generate_valuation_pdf_bytes(assets: &[AssetRecord], scope_label: &str) -
         current_layer.use_text(short_name, 8.5, Mm(18.0), Mm(y), &font_regular);
         current_layer.use_text(&asset.location_name, 8.5, Mm(96.0), Mm(y), &font_regular);
         current_layer.use_text(short_serial, 8.5, Mm(134.0), Mm(y), &font_regular);
-        current_layer.use_text(format!("{:.0}", asset.purchase_price), 8.5, Mm(174.0), Mm(y), &font_regular);
+        current_layer.use_text(
+            format!("{:.0}", asset.purchase_price),
+            8.5,
+            Mm(174.0),
+            Mm(y),
+            &font_regular,
+        );
         y -= 5.8;
     }
 

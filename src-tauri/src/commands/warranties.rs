@@ -22,10 +22,15 @@ pub async fn upsert_warranty(
     input: UpsertWarrantyInput,
 ) -> AppResult<WarrantyRecord> {
     if input.provider.trim().is_empty() {
-        return Err(AppError::Validation("Warranty provider is required.".into()));
+        return Err(AppError::Validation(
+            "Warranty provider is required.".into(),
+        ));
     }
     let now_iso = Utc::now().to_rfc3339();
-    let id = input.id.clone().unwrap_or_else(|| Uuid::new_v4().to_string());
+    let id = input
+        .id
+        .clone()
+        .unwrap_or_else(|| Uuid::new_v4().to_string());
 
     if input.id.is_some() {
         sqlx::query(

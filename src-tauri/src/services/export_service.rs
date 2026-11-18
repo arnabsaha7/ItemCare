@@ -82,10 +82,7 @@ pub fn create_encrypted_insurance_pack(
 
     // 2. Valuation PDF
     if request.include_valuation_pdf {
-        let scope = request
-            .room_filter
-            .as_deref()
-            .unwrap_or("Entire Home");
+        let scope = request.room_filter.as_deref().unwrap_or("Entire Home");
         let pdf_bytes = generate_valuation_pdf_bytes(assets, scope)?;
         zip.start_file("HomeVault_Valuation_Report.pdf", options)?;
         zip.write_all(&pdf_bytes)?;
@@ -93,7 +90,8 @@ pub fn create_encrypted_insurance_pack(
 
     // 3. Maintenance History CSV
     if request.include_maintenance_history {
-        let mut mcsv = String::from("AssetID,TaskName,CompletedDate,ServiceProvider,CostINR,Notes\n");
+        let mut mcsv =
+            String::from("AssetID,TaskName,CompletedDate,ServiceProvider,CostINR,Notes\n");
         for h in history {
             mcsv.push_str(&format!(
                 "\"{}\",\"{}\",\"{}\",\"{}\",{:.2},\"{}\"\n",

@@ -10,7 +10,9 @@ use tauri::State;
 use uuid::Uuid;
 
 #[tauri::command]
-pub async fn list_backup_history(state: State<'_, AppState>) -> AppResult<Vec<BackupHistoryRecord>> {
+pub async fn list_backup_history(
+    state: State<'_, AppState>,
+) -> AppResult<Vec<BackupHistoryRecord>> {
     let rows = sqlx::query_as::<_, BackupHistoryRecord>(
         "SELECT id, archive_name, archive_path, size_bytes, asset_count, document_count, sha256_checksum, backup_type, created_at
          FROM backup_history ORDER BY created_at DESC"

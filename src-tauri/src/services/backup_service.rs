@@ -86,7 +86,13 @@ pub fn create_vault_backup(
 
     // Legacy attachments directory support
     let attachments_dir = vault_dir.join("attachments");
-    add_dir_recursive(&mut zip, &attachments_dir, &attachments_dir, "attachments", options)?;
+    add_dir_recursive(
+        &mut zip,
+        &attachments_dir,
+        &attachments_dir,
+        "attachments",
+        options,
+    )?;
 
     zip.finish()?;
 
@@ -102,18 +108,18 @@ pub fn inspect_backup_archive(archive_path: &Path) -> AppResult<BackupManifest> 
     let file = File::open(archive_path)?;
     let mut archive = ZipArchive::new(file)?;
 
-    let mut manifest_file = archive
-        .by_name("manifest.json")
-        .map_err(|_| AppError::Validation("Invalid HomeVault backup: missing manifest.json".into()))?;
+    let mut manifest_file = archive.by_name("manifest.json").map_err(|_| {
+        AppError::Validation("Invalid HomeVault backup: missing manifest.json".into())
+    })?;
     let mut manifest_str = String::new();
     manifest_file.read_to_string(&mut manifest_str)?;
     let manifest: BackupManifest = serde_json::from_str(&manifest_str)?;
 
     drop(manifest_file);
 
-    let mut db_file = archive
-        .by_name("homevault.db")
-        .map_err(|_| AppError::Validation("Invalid HomeVault backup: missing homevault.db".into()))?;
+    let mut db_file = archive.by_name("homevault.db").map_err(|_| {
+        AppError::Validation("Invalid HomeVault backup: missing homevault.db".into())
+    })?;
     let mut db_bytes = Vec::new();
     db_file.read_to_end(&mut db_bytes)?;
 

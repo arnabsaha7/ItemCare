@@ -1,7 +1,7 @@
 {
   "$schema": "../gen/schemas/desktop-schema.json",
   "identifier": "default",
-  "description": "Scoped native capabilities for ItemCare desktop window, dialogs, notifications, clipboard, and app data vault.",
+  "description": "Scoped native capabilities for ItemCare desktop window, dialogs, notifications, clipboard, updater, and app data vault.",
   "windows": ["main"],
   "permissions": [
     "core:default",
@@ -22,6 +22,7 @@
     "opener:allow-open-path",
     "store:default",
     "window-state:default",
+    "updater:default",
     {
       "identifier": "fs:allow-read-file",
       "allow": [

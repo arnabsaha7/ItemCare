@@ -88,24 +88,34 @@ pub async fn list_locations(state: State<'_, AppState>) -> AppResult<Vec<Locatio
 }
 
 #[tauri::command]
-pub async fn upsert_asset(state: State<'_, AppState>, input: UpsertAssetInput) -> AppResult<String> {
+pub async fn upsert_asset(
+    state: State<'_, AppState>,
+    input: UpsertAssetInput,
+) -> AppResult<String> {
     if input.name.trim().is_empty() {
         return Err(AppError::Validation("Asset name is required.".into()));
     }
     if input.purchase_price < 0.0 {
-        return Err(AppError::Validation("Purchase price cannot be negative.".into()));
+        return Err(AppError::Validation(
+            "Purchase price cannot be negative.".into(),
+        ));
     }
 
     let now_iso = Utc::now().to_rfc3339();
-    let asset_id = input.id.clone().unwrap_or_else(|| Uuid::new_v4().to_string());
+    let asset_id = input
+        .id
+        .clone()
+        .unwrap_or_else(|| Uuid::new_v4().to_string());
 
     let mut tx = state.pool.begin().await?;
 
     // Resolve or create category
-    let cat_id: String = match sqlx::query_as::<_, (String,)>("SELECT id FROM categories WHERE name = ?")
-        .bind(&input.category_name)
-        .fetch_optional(&mut *tx)
-        .await?
+    let cat_id: String = match sqlx::query_as::<_, (String,)>(
+        "SELECT id FROM categories WHERE name = ?",
+    )
+    .bind(&input.category_name)
+    .fetch_optional(&mut *tx)
+    .await?
     {
         Some((id,)) => id,
         None => {
@@ -121,10 +131,12 @@ pub async fn upsert_asset(state: State<'_, AppState>, input: UpsertAssetInput) -
     };
 
     // Resolve or create location
-    let loc_id: String = match sqlx::query_as::<_, (String,)>("SELECT id FROM locations WHERE name = ?")
-        .bind(&input.location_name)
-        .fetch_optional(&mut *tx)
-        .await?
+    let loc_id: String = match sqlx::query_as::<_, (String,)>(
+        "SELECT id FROM locations WHERE name = ?",
+    )
+    .bind(&input.location_name)
+    .fetch_optional(&mut *tx)
+    .await?
     {
         Some((id,)) => id,
         None => {

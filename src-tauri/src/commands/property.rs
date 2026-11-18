@@ -97,7 +97,10 @@ pub async fn get_property_specs(state: State<'_, AppState>) -> AppResult<Propert
 }
 
 #[tauri::command]
-pub async fn upsert_paint_record(state: State<'_, AppState>, input: UpsertPaintInput) -> AppResult<()> {
+pub async fn upsert_paint_record(
+    state: State<'_, AppState>,
+    input: UpsertPaintInput,
+) -> AppResult<()> {
     let now = Utc::now().to_rfc3339();
     if let Some(id) = input.id {
         sqlx::query("UPDATE paint_records SET room_name = ?, brand = ?, color_name = ?, hex_code = ?, finish = ?, notes = ?, updated_at = ? WHERE id = ?")
@@ -113,12 +116,18 @@ pub async fn upsert_paint_record(state: State<'_, AppState>, input: UpsertPaintI
 
 #[tauri::command]
 pub async fn delete_paint_record(state: State<'_, AppState>, id: String) -> AppResult<()> {
-    sqlx::query("DELETE FROM paint_records WHERE id = ?").bind(id).execute(&state.pool).await?;
+    sqlx::query("DELETE FROM paint_records WHERE id = ?")
+        .bind(id)
+        .execute(&state.pool)
+        .await?;
     Ok(())
 }
 
 #[tauri::command]
-pub async fn upsert_electrical_breaker(state: State<'_, AppState>, input: UpsertBreakerInput) -> AppResult<()> {
+pub async fn upsert_electrical_breaker(
+    state: State<'_, AppState>,
+    input: UpsertBreakerInput,
+) -> AppResult<()> {
     let now = Utc::now().to_rfc3339();
     if let Some(id) = input.id {
         sqlx::query("UPDATE electrical_breakers SET breaker_number = ?, circuit_label = ?, amperage = ?, zone = ?, notes = ?, updated_at = ? WHERE id = ?")
@@ -134,12 +143,18 @@ pub async fn upsert_electrical_breaker(state: State<'_, AppState>, input: Upsert
 
 #[tauri::command]
 pub async fn delete_electrical_breaker(state: State<'_, AppState>, id: String) -> AppResult<()> {
-    sqlx::query("DELETE FROM electrical_breakers WHERE id = ?").bind(id).execute(&state.pool).await?;
+    sqlx::query("DELETE FROM electrical_breakers WHERE id = ?")
+        .bind(id)
+        .execute(&state.pool)
+        .await?;
     Ok(())
 }
 
 #[tauri::command]
-pub async fn upsert_network_setting(state: State<'_, AppState>, input: UpsertNetworkInput) -> AppResult<()> {
+pub async fn upsert_network_setting(
+    state: State<'_, AppState>,
+    input: UpsertNetworkInput,
+) -> AppResult<()> {
     let now = Utc::now().to_rfc3339();
     if let Some(id) = input.id {
         sqlx::query("UPDATE network_settings SET router_name = ?, model = ?, ssid = ?, encrypted_password = ?, ip_address = ?, notes = ?, updated_at = ? WHERE id = ?")
@@ -154,7 +169,10 @@ pub async fn upsert_network_setting(state: State<'_, AppState>, input: UpsertNet
 }
 
 #[tauri::command]
-pub async fn upsert_utility_record(state: State<'_, AppState>, input: UpsertUtilityInput) -> AppResult<()> {
+pub async fn upsert_utility_record(
+    state: State<'_, AppState>,
+    input: UpsertUtilityInput,
+) -> AppResult<()> {
     let now = Utc::now().to_rfc3339();
     if let Some(id) = input.id {
         sqlx::query("UPDATE utility_records SET service_type = ?, provider_name = ?, account_number = ?, support_contact = ?, vendor_phone = ?, notes = ?, updated_at = ? WHERE id = ?")
@@ -170,6 +188,9 @@ pub async fn upsert_utility_record(state: State<'_, AppState>, input: UpsertUtil
 
 #[tauri::command]
 pub async fn delete_utility_record(state: State<'_, AppState>, id: String) -> AppResult<()> {
-    sqlx::query("DELETE FROM utility_records WHERE id = ?").bind(id).execute(&state.pool).await?;
+    sqlx::query("DELETE FROM utility_records WHERE id = ?")
+        .bind(id)
+        .execute(&state.pool)
+        .await?;
     Ok(())
 }

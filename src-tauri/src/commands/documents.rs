@@ -24,7 +24,10 @@ fn current_storage_dir(state: &AppState) -> AppResult<std::path::PathBuf> {
 
 #[tauri::command]
 pub async fn list_documents(state: State<'_, AppState>) -> AppResult<Vec<DocumentWithLinks>> {
-    let sql = format!("SELECT {} FROM documents ORDER BY created_at DESC", DOCUMENT_SELECT_COLS);
+    let sql = format!(
+        "SELECT {} FROM documents ORDER BY created_at DESC",
+        DOCUMENT_SELECT_COLS
+    );
     let docs = sqlx::query_as::<_, DocumentRecord>(&sql)
         .fetch_all(&state.pool)
         .await?;
@@ -72,12 +75,11 @@ pub async fn list_documents(state: State<'_, AppState>) -> AppResult<Vec<Documen
             }
         }
 
-        let links: Vec<(String,)> = sqlx::query_as(
-            "SELECT asset_id FROM document_asset_links WHERE document_id = ?"
-        )
-        .bind(&doc.id)
-        .fetch_all(&state.pool)
-        .await?;
+        let links: Vec<(String,)> =
+            sqlx::query_as("SELECT asset_id FROM document_asset_links WHERE document_id = ?")
+                .bind(&doc.id)
+                .fetch_all(&state.pool)
+                .await?;
         result.push(DocumentWithLinks {
             document: doc,
             linked_asset_ids: links.into_iter().map(|(id,)| id).collect(),
@@ -93,11 +95,8 @@ pub async fn import_document(
     input: ImportDocumentInput,
 ) -> AppResult<DocumentWithLinks> {
     let storage_dir = current_storage_dir(&state)?;
-    let stored = validate_and_copy_attachment(
-        Path::new(&input.source_path),
-        &storage_dir,
-        &input.category,
-    )?;
+    let stored =
+        validate_and_copy_attachment(Path::new(&input.source_path), &storage_dir, &input.category)?;
 
     let doc_id = Uuid::new_v4().to_string();
     let now_iso = Utc::now().to_rfc3339();
@@ -137,16 +136,21 @@ pub async fn import_document(
     .await?;
 
     for asset_id in &input.linked_asset_ids {
-        sqlx::query("INSERT OR IGNORE INTO document_asset_links (document_id, asset_id) VALUES (?, ?)")
-            .bind(&doc_id)
-            .bind(asset_id)
-            .execute(&mut *tx)
-            .await?;
+        sqlx::query(
+            "INSERT OR IGNORE INTO document_asset_links (document_id, asset_id) VALUES (?, ?)",
+        )
+        .bind(&doc_id)
+        .bind(asset_id)
+        .execute(&mut *tx)
+        .await?;
     }
 
     tx.commit().await?;
 
-    let sql = format!("SELECT {} FROM documents WHERE id = ?", DOCUMENT_SELECT_COLS);
+    let sql = format!(
+        "SELECT {} FROM documents WHERE id = ?",
+        DOCUMENT_SELECT_COLS
+    );
     let doc = sqlx::query_as::<_, DocumentRecord>(&sql)
         .bind(&doc_id)
         .fetch_one(&state.pool)
@@ -163,7 +167,10 @@ pub async fn read_document_bytes(
     state: State<'_, AppState>,
     document_id: String,
 ) -> AppResult<Vec<u8>> {
-    let sql = format!("SELECT {} FROM documents WHERE id = ?", DOCUMENT_SELECT_COLS);
+    let sql = format!(
+        "SELECT {} FROM documents WHERE id = ?",
+        DOCUMENT_SELECT_COLS
+    );
     let doc = sqlx::query_as::<_, DocumentRecord>(&sql)
         .bind(&document_id)
         .fetch_optional(&state.pool)
@@ -171,7 +178,9 @@ pub async fn read_document_bytes(
         .ok_or_else(|| AppError::NotFound("Document record not found.".into()))?;
 
     if doc.file_path.starts_with("builtin:") {
-        return Err(AppError::Validation("Built-in sample documents are served directly by the frontend.".into()));
+        return Err(AppError::Validation(
+            "Built-in sample documents are served directly by the frontend.".into(),
+        ));
     }
 
     let storage_dir = current_storage_dir(&state)?;
@@ -284,7 +293,10 @@ pub async fn accept_modified_document(
     state: State<'_, AppState>,
     document_id: String,
 ) -> AppResult<DocumentWithLinks> {
-    let sql = format!("SELECT {} FROM documents WHERE id = ?", DOCUMENT_SELECT_COLS);
+    let sql = format!(
+        "SELECT {} FROM documents WHERE id = ?",
+        DOCUMENT_SELECT_COLS
+    );
     let doc = sqlx::query_as::<_, DocumentRecord>(&sql)
         .bind(&document_id)
         .fetch_optional(&state.pool)
@@ -299,7 +311,9 @@ pub async fn accept_modified_document(
         &doc.relative_path,
     )?;
     if !path.exists() || !path.is_file() {
-        return Err(AppError::NotFound("Cannot accept missing document file.".into()));
+        return Err(AppError::NotFound(
+            "Cannot accept missing document file.".into(),
+        ));
     }
 
     let bytes = std::fs::read(&path)?;
@@ -325,12 +339,11 @@ pub async fn accept_modified_document(
         .bind(&document_id)
         .fetch_one(&state.pool)
         .await?;
-    let links: Vec<(String,)> = sqlx::query_as(
-        "SELECT asset_id FROM document_asset_links WHERE document_id = ?"
-    )
-    .bind(&document_id)
-    .fetch_all(&state.pool)
-    .await?;
+    let links: Vec<(String,)> =
+        sqlx::query_as("SELECT asset_id FROM document_asset_links WHERE document_id = ?")
+            .bind(&document_id)
+            .fetch_all(&state.pool)
+            .await?;
 
     Ok(DocumentWithLinks {
         document: updated,
@@ -384,10 +397,15 @@ pub async fn update_document_metadata(
     linked_asset_ids: Vec<String>,
 ) -> AppResult<()> {
     if title.trim().is_empty() {
-        return Err(AppError::Validation("Document title cannot be empty.".into()));
+        return Err(AppError::Validation(
+            "Document title cannot be empty.".into(),
+        ));
     }
 
-    let sql = format!("SELECT {} FROM documents WHERE id = ?", DOCUMENT_SELECT_COLS);
+    let sql = format!(
+        "SELECT {} FROM documents WHERE id = ?",
+        DOCUMENT_SELECT_COLS
+    );
     let existing = sqlx::query_as::<_, DocumentRecord>(&sql)
         .bind(&document_id)
         .fetch_optional(&state.pool)
@@ -452,11 +470,13 @@ pub async fn update_document_metadata(
         .await?;
 
     for asset_id in linked_asset_ids {
-        sqlx::query("INSERT OR IGNORE INTO document_asset_links (document_id, asset_id) VALUES (?, ?)")
-            .bind(&document_id)
-            .bind(asset_id)
-            .execute(&mut *tx)
-            .await?;
+        sqlx::query(
+            "INSERT OR IGNORE INTO document_asset_links (document_id, asset_id) VALUES (?, ?)",
+        )
+        .bind(&document_id)
+        .bind(asset_id)
+        .execute(&mut *tx)
+        .await?;
     }
     tx.commit().await?;
     Ok(())
@@ -464,7 +484,10 @@ pub async fn update_document_metadata(
 
 #[tauri::command]
 pub async fn delete_document(state: State<'_, AppState>, document_id: String) -> AppResult<()> {
-    let sql = format!("SELECT {} FROM documents WHERE id = ?", DOCUMENT_SELECT_COLS);
+    let sql = format!(
+        "SELECT {} FROM documents WHERE id = ?",
+        DOCUMENT_SELECT_COLS
+    );
     let doc = sqlx::query_as::<_, DocumentRecord>(&sql)
         .bind(&document_id)
         .fetch_optional(&state.pool)

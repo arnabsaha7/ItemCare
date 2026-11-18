@@ -1,7 +1,7 @@
 {
   "name": "itemcare",
   "private": true,
-  "version": "1.0.0",
+  "version": "1.1.0",
   "type": "module",
   "engines": {
     "node": ">=22.12.0"
@@ -24,6 +24,7 @@
     "@tauri-apps/plugin-notification": "^2.8.1",
     "@tauri-apps/plugin-opener": "^2.7.3",
     "@tauri-apps/plugin-store": "^2.5.1",
+    "@tauri-apps/plugin-updater": "^2.14.1",
     "@tauri-apps/plugin-window-state": "^2.5.0",
     "dotenv": "^17.2.3",
     "express": "^4.21.2",

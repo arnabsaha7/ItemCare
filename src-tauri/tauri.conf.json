@@ -27,13 +27,19 @@
       "csp": "default-src 'self'; img-src 'self' asset: https://asset.localhost data: blob:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; worker-src 'self' blob:;",
       "assetProtocol": {
         "enable": true,
-        "scope": ["$APPDATA/ItemCare/**"]
+        "scope": [
+          "$APPDATA/ItemCare/**"
+        ]
       }
     }
   },
   "bundle": {
     "active": true,
-    "targets": ["nsis", "msi"],
+    "createUpdaterArtifacts": true,
+    "targets": [
+      "nsis",
+      "msi"
+    ],
     "shortDescription": "Your Personal Home & Asset Command Center",
     "longDescription": "Local-first Windows desktop command center for household assets, warranties, maintenance schedules, property documentation, and encrypted insurance packs.",
     "copyright": "Copyright (c) 2026 ItemCare",
@@ -52,6 +58,15 @@
       "wix": {
         "language": "en-US"
       }
+    }
+  },
+  "plugins": {
+    "updater": {
+      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDUxMjI0NUQ4NkI3RjVCQTkKUldTcFczOXIyRVVpVVFRU0lsWFVCY0hMR0QvT2hUSElkc1V5L2F5cDNkdnhzOWluREVBYUZvalUK",
+      "endpoints": [
+        "https://github.com/arnabsaha7/ItemCare/releases/latest/download/latest.json"
+      ],
+      "requireSignedVersion": true
     }
   }
 }

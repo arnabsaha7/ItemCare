@@ -95,7 +95,8 @@ pub fn validate_and_copy_attachment(
     let short_id = Uuid::new_v4().simple().to_string();
     let short_prefix = &short_id[..8];
     let year = Utc::now().year();
-    let relative_path = build_structured_relative_path(category, &original_name, short_prefix, year);
+    let relative_path =
+        build_structured_relative_path(category, &original_name, short_prefix, year);
 
     let dest_path = storage_dir.join(&relative_path);
     if let Some(parent) = dest_path.parent() {
@@ -144,7 +145,8 @@ pub fn resolve_authorized_document_path(
     }
 
     let direct = PathBuf::from(file_path);
-    if let (Ok(canon_file), Ok(canon_storage)) = (direct.canonicalize(), storage_dir.canonicalize()) {
+    if let (Ok(canon_file), Ok(canon_storage)) = (direct.canonicalize(), storage_dir.canonicalize())
+    {
         if canon_file.starts_with(&canon_storage) {
             return Ok(canon_file);
         }

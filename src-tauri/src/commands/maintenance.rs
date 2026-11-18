@@ -45,7 +45,10 @@ pub async fn upsert_maintenance_task(
         return Err(AppError::Validation("Task name is required.".into()));
     }
     let now_iso = Utc::now().to_rfc3339();
-    let id = input.id.clone().unwrap_or_else(|| Uuid::new_v4().to_string());
+    let id = input
+        .id
+        .clone()
+        .unwrap_or_else(|| Uuid::new_v4().to_string());
 
     if input.id.is_some() {
         sqlx::query(

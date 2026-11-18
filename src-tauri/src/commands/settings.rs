@@ -1,10 +1,13 @@
 use crate::commands::documents::DOCUMENT_SELECT_COLS;
 use crate::database::{
-    ensure_storage_structure, load_sample_data as db_load_sample_data, save_storage_config, AppState,
+    ensure_storage_structure, load_sample_data as db_load_sample_data, save_storage_config,
+    AppState,
 };
 use crate::errors::{AppError, AppResult};
 use crate::models::document::DocumentRecord;
-use crate::services::file_service::{compute_sha256, is_safe_relative_path, resolve_authorized_document_path};
+use crate::services::file_service::{
+    compute_sha256, is_safe_relative_path, resolve_authorized_document_path,
+};
 use chrono::Utc;
 use serde::{Deserialize, Serialize};
 use sqlx::Row;
@@ -43,7 +46,7 @@ pub async fn get_settings(state: State<'_, AppState>) -> AppResult<HashMap<Strin
 pub async fn set_setting(state: State<'_, AppState>, key: String, value: String) -> AppResult<()> {
     sqlx::query(
         "INSERT INTO application_settings (key, value, updated_at) VALUES (?, ?, ?)
-         ON CONFLICT(key) DO UPDATE SET value = excluded.value, updated_at = excluded.updated_at"
+         ON CONFLICT(key) DO UPDATE SET value = excluded.value, updated_at = excluded.updated_at",
     )
     .bind(key)
     .bind(value)
@@ -149,12 +152,7 @@ pub async fn set_storage_location(
                     doc.file_name
                 )));
             }
-            moved_paths.push((
-                doc.id,
-                dest.to_string_lossy().to_string(),
-                rel,
-                src,
-            ));
+            moved_paths.push((doc.id, dest.to_string_lossy().to_string(), rel, src));
         }
 
         let mut tx = state.pool.begin().await?;
