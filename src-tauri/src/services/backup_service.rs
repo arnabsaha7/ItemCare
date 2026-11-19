@@ -1,3 +1,4 @@
+use crate::constants::{APP_VERSION, DB_FILENAME};
 use crate::errors::{AppError, AppResult};
 use crate::services::file_service::is_safe_relative_path;
 use chrono::Utc;
@@ -64,7 +65,7 @@ pub fn create_vault_backup(
     let db_sha256 = hex::encode(hasher.finalize());
 
     let manifest = BackupManifest {
-        app_version: "1.0.0".into(),
+        app_version: APP_VERSION.into(),
         created_at: Utc::now().to_rfc3339(),
         asset_count,
         document_count,
@@ -78,13 +79,12 @@ pub fn create_vault_backup(
     zip.start_file("manifest.json", options)?;
     zip.write_all(serde_json::to_string_pretty(&manifest)?.as_bytes())?;
 
-    zip.start_file("homevault.db", options)?;
+    zip.start_file(DB_FILENAME, options)?;
     zip.write_all(&db_bytes)?;
 
     let docs_dir = storage_dir.join("Documents");
     add_dir_recursive(&mut zip, &docs_dir, &docs_dir, "Documents", options)?;
 
-    // Legacy attachments directory support
     let attachments_dir = vault_dir.join("attachments");
     add_dir_recursive(
         &mut zip,
@@ -109,7 +109,7 @@ pub fn inspect_backup_archive(archive_path: &Path) -> AppResult<BackupManifest> 
     let mut archive = ZipArchive::new(file)?;
 
     let mut manifest_file = archive.by_name("manifest.json").map_err(|_| {
-        AppError::Validation("Invalid HomeVault backup: missing manifest.json".into())
+        AppError::Validation("Invalid ItemCare backup: missing manifest.json".into())
     })?;
     let mut manifest_str = String::new();
     manifest_file.read_to_string(&mut manifest_str)?;
@@ -117,8 +117,8 @@ pub fn inspect_backup_archive(archive_path: &Path) -> AppResult<BackupManifest> 
 
     drop(manifest_file);
 
-    let mut db_file = archive.by_name("homevault.db").map_err(|_| {
-        AppError::Validation("Invalid HomeVault backup: missing homevault.db".into())
+    let mut db_file = archive.by_name(DB_FILENAME).map_err(|_| {
+        AppError::Validation(format!("Invalid ItemCare backup: missing {}", DB_FILENAME))
     })?;
     let mut db_bytes = Vec::new();
     db_file.read_to_end(&mut db_bytes)?;
@@ -156,11 +156,11 @@ pub fn restore_backup_archive(
 
     let mut db_bytes = Vec::new();
     {
-        let mut db_entry = archive.by_name("homevault.db")?;
+        let mut db_entry = archive.by_name(DB_FILENAME)?;
         db_entry.read_to_end(&mut db_bytes)?;
     }
 
-    let tmp_db = vault_dir.join("homevault.db.restore_tmp");
+    let tmp_db = vault_dir.join(format!("{}.restore_tmp", DB_FILENAME));
     fs::write(&tmp_db, &db_bytes)?;
     fs::rename(&tmp_db, db_path)?;
 

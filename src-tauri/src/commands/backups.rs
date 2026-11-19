@@ -1,3 +1,4 @@
+use crate::constants::DEFAULT_BACKUP_FILENAME;
 use crate::database::AppState;
 use crate::errors::{AppError, AppResult};
 use crate::models::property::BackupHistoryRecord;
@@ -53,7 +54,7 @@ pub async fn create_backup(
     let archive_name = dest
         .file_name()
         .and_then(|n| n.to_str())
-        .unwrap_or("homevault-backup.hvbackup")
+        .unwrap_or(DEFAULT_BACKUP_FILENAME)
         .to_string();
 
     let id = Uuid::new_v4().to_string();

@@ -1,3 +1,4 @@
+use crate::constants::{VALUATION_REPORT_DOC_TITLE, VALUATION_REPORT_HEADING};
 use crate::errors::{AppError, AppResult};
 use crate::models::asset::AssetRecord;
 use chrono::Utc;
@@ -9,7 +10,7 @@ pub fn generate_valuation_pdf_bytes(
     scope_label: &str,
 ) -> AppResult<Vec<u8>> {
     let (doc, page1, layer1) = PdfDocument::new(
-        "HomeVault Insurance Valuation Report",
+        VALUATION_REPORT_DOC_TITLE,
         Mm(210.0),
         Mm(297.0),
         "Valuation Layer",
@@ -27,7 +28,7 @@ pub fn generate_valuation_pdf_bytes(
 
     let mut current_layer = doc.get_page(page1).get_layer(layer1);
     current_layer.use_text(
-        "HomeVault — Insurance & Moving Valuation Report",
+        VALUATION_REPORT_HEADING,
         16.0,
         Mm(18.0),
         Mm(276.0),

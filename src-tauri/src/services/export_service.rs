@@ -1,3 +1,4 @@
+use crate::constants::VALUATION_REPORT_FILENAME;
 use crate::errors::{AppError, AppResult};
 use crate::models::asset::AssetRecord;
 use crate::models::document::DocumentRecord;
@@ -84,7 +85,7 @@ pub fn create_encrypted_insurance_pack(
     if request.include_valuation_pdf {
         let scope = request.room_filter.as_deref().unwrap_or("Entire Home");
         let pdf_bytes = generate_valuation_pdf_bytes(assets, scope)?;
-        zip.start_file("HomeVault_Valuation_Report.pdf", options)?;
+        zip.start_file(VALUATION_REPORT_FILENAME, options)?;
         zip.write_all(&pdf_bytes)?;
     }
 

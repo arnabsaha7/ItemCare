@@ -1,4 +1,5 @@
 use crate::commands::documents::DOCUMENT_SELECT_COLS;
+use crate::constants::WRITE_PROBE_FILENAME;
 use crate::database::{
     ensure_storage_structure, load_sample_data as db_load_sample_data, save_storage_config,
     AppState,
@@ -93,7 +94,7 @@ pub async fn set_storage_location(
 
     ensure_storage_structure(&target_dir)?;
 
-    let probe_path = target_dir.join(".homevault_write_probe");
+    let probe_path = target_dir.join(WRITE_PROBE_FILENAME);
     std::fs::write(&probe_path, b"ok").map_err(|e| {
         AppError::Validation(format!(
             "Selected storage folder is not writable ({}): {}",

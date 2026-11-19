@@ -46,7 +46,6 @@ import {
 } from '@/src/utils/pdfEngine';
 
 const STORAGE_KEY = STORAGE_KEYS.previewDb;
-const LEGACY_STORAGE_KEY = STORAGE_KEYS.legacyPreviewDb;
 const DEFAULT_PREVIEW_STORAGE_PATH = APP_PATHS.defaultSavePath;
 const IDB_NAME = STORAGE_KEYS.previewIndexedDb;
 const IDB_STORE = 'blobs';
@@ -363,7 +362,7 @@ function buildSampleSeedData(categories: Category[], locations: Location[]): Omi
       serialNumber: s.serial,
       productId: s.productId,
       imei: '',
-      qrBarcode: `HV-${s.serial}`,
+      qrBarcode: `IC-${s.serial}`,
       status: 'active',
       photoPath: s.photoPath,
       serialPhotoPath: null,
@@ -638,7 +637,7 @@ function buildSampleSeedData(categories: Category[], locations: Location[]): Omi
       routerName: 'Primary Mesh Gateway',
       model: 'ASUS ZenWiFi XT8 (AX6600)',
       ssid: APP_BRAND.sampleWifiSsid,
-      encryptedPassword: 'HV-Mesh@2026#Secure',
+      encryptedPassword: 'IC-Mesh@2026#Secure',
       ipAddress: '192.168.50.1',
       notes: 'Dual-band Wi-Fi 6 backhaul wired to Living Room & Study',
       updatedAt: nowIso,
@@ -685,7 +684,7 @@ function buildSampleSeedData(categories: Category[], locations: Location[]): Omi
 }
 
 function loadDb(): PreviewDatabase {
-  const raw = localStorage.getItem(STORAGE_KEY) ?? localStorage.getItem(LEGACY_STORAGE_KEY);
+  const raw = localStorage.getItem(STORAGE_KEY);
   if (!raw) {
     const clean = createCleanSeed();
     saveDb(clean);
@@ -1445,9 +1444,7 @@ export const browserPreviewAdapter = {
   async validateBackupFileBrowser(file: File): Promise<BackupManifest> {
     const zip = await JSZip.loadAsync(await file.arrayBuffer());
     const manifestEntry = zip.file('manifest.json');
-    const dbEntry =
-      zip.file(BACKUP_CONFIG.previewDbEntryName) ??
-      zip.file(BACKUP_CONFIG.legacyPreviewDbEntryName);
+    const dbEntry = zip.file(BACKUP_CONFIG.previewDbEntryName);
     if (!manifestEntry || !dbEntry) {
       throw new Error(`Invalid ${APP_BRAND.name} backup archive: missing manifest or database payload.`);
     }
@@ -1468,9 +1465,7 @@ export const browserPreviewAdapter = {
       sessionStorage.setItem(STORAGE_KEYS.previewPreRestoreSnapshot, currentRaw);
     }
     const zip = await JSZip.loadAsync(await file.arrayBuffer());
-    const dbEntry =
-      zip.file(BACKUP_CONFIG.previewDbEntryName) ??
-      zip.file(BACKUP_CONFIG.legacyPreviewDbEntryName);
+    const dbEntry = zip.file(BACKUP_CONFIG.previewDbEntryName);
     if (!dbEntry) throw new Error('Database payload missing in backup.');
     const restoredDb = JSON.parse(await dbEntry.async('string')) as PreviewDatabase;
     saveDb(restoredDb);

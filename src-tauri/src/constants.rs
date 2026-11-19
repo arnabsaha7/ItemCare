@@ -7,7 +7,6 @@ pub const VAULT_CONFIG_FILENAME: &str = "vault_config.json";
 pub const WRITE_PROBE_FILENAME: &str = ".itemcare_write_probe";
 
 pub const DB_FILENAME: &str = "itemcare.db";
-pub const LEGACY_DB_FILENAME: &str = "homevault.db";
 
 pub const DOCUMENTS_ROOT_FOLDER: &str = "Documents";
 pub const BACKUPS_FOLDER: &str = "Backups";

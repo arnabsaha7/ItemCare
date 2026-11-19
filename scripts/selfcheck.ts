@@ -29,32 +29,32 @@ function contrastRatio(hex1: string, hex2: string): number {
   return (lighter + 0.05) / (darker + 0.05);
 }
 
-// 1. normalizeSettings handles legacy/incomplete storage safely
-const legacy = normalizeSettings({ theme: 'dark', warrantyAlertDays: 5 });
-assert.equal(legacy.theme, 'dark');
-assert.equal(legacy.ownerName, DEFAULT_SETTINGS.ownerName);
-assert.equal(legacy.residenceName, DEFAULT_SETTINGS.residenceName);
-assert.equal(legacy.onboardingCompleted, false);
-assert.equal(legacy.storagePath, '');
-assert.equal(legacy.warrantyAlertDays, 30); // out-of-range (<7) falls back to 30
-assert.deepEqual(legacy.sidebarGroups, DEFAULT_SETTINGS.sidebarGroups);
+// 1. normalizeSettings handles incomplete storage safely
+const incomplete = normalizeSettings({ theme: 'dark', warrantyAlertDays: 5 });
+assert.equal(incomplete.theme, 'dark');
+assert.equal(incomplete.ownerName, DEFAULT_SETTINGS.ownerName);
+assert.equal(incomplete.residenceName, DEFAULT_SETTINGS.residenceName);
+assert.equal(incomplete.onboardingCompleted, false);
+assert.equal(incomplete.storagePath, '');
+assert.equal(incomplete.warrantyAlertDays, 30); // out-of-range (<7) falls back to 30
+assert.deepEqual(incomplete.sidebarGroups, DEFAULT_SETTINGS.sidebarGroups);
 
 // 2. normalizeSettings trims strings and preserves onboarding/storage settings
 const partial = normalizeSettings({
   ownerName: '   ',
   warrantyAlertDays: 45,
-  storagePath: '  D:\\HomeVault\\VaultFiles  ',
+  storagePath: '  D:\\ItemCare\\VaultFiles  ',
   onboardingCompleted: true,
   sidebarGroups: { smartViews: false } as typeof DEFAULT_SETTINGS.sidebarGroups,
 });
 assert.equal(partial.ownerName, DEFAULT_SETTINGS.ownerName);
 assert.equal(partial.warrantyAlertDays, 45);
-assert.equal(partial.storagePath, 'D:\\HomeVault\\VaultFiles');
+assert.equal(partial.storagePath, 'D:\\ItemCare\\VaultFiles');
 assert.equal(partial.onboardingCompleted, true);
 assert.equal(partial.sidebarGroups.smartViews, false);
 assert.equal(partial.sidebarGroups.propertyOperations, true);
 
-// 3. Theme normalization & 6-theme catalog checks (3 light, 3 dark, HomeVault Signature in both)
+// 3. Theme normalization & 6-theme catalog checks (3 light, 3 dark, ItemCare Signature in both)
 const allThemes: AppTheme[] = [
   'light',
   'warm-linen',
@@ -76,8 +76,8 @@ const lightThemes = THEME_PRESETS.filter((p) => p.mode === 'light');
 const darkThemes = THEME_PRESETS.filter((p) => p.mode === 'dark');
 assert.equal(lightThemes.length, 3);
 assert.equal(darkThemes.length, 3);
-assert.ok(lightThemes.some((p) => p.id === 'light' && p.name === 'HomeVault Signature'));
-assert.ok(darkThemes.some((p) => p.id === 'dark' && p.name === 'HomeVault Signature'));
+assert.ok(lightThemes.some((p) => p.id === 'light' && p.name === 'ItemCare Signature'));
+assert.ok(darkThemes.some((p) => p.id === 'dark' && p.name === 'ItemCare Signature'));
 assert.equal(isDarkTheme('light'), false);
 assert.equal(isDarkTheme('dark'), true);
 assert.equal(isDarkTheme('midnight-navy'), true);

@@ -162,7 +162,7 @@ pub fn resolve_authorized_document_path(
     }
 
     Err(AppError::Validation(
-        "Access denied: document path resolves outside the authorized HomeVault storage folder."
+        "Access denied: document path resolves outside the authorized ItemCare storage folder."
             .into(),
     ))
 }

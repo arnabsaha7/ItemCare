@@ -1,4 +1,5 @@
 pub mod commands;
+pub mod constants;
 pub mod database;
 pub mod errors;
 pub mod models;
@@ -25,7 +26,7 @@ pub fn run() {
                 .expect("Failed to resolve OS application data directory");
 
             let state = tauri::async_runtime::block_on(init_database(&app_data_dir))
-                .expect("Failed to initialize HomeVault SQLite database");
+                .expect("Failed to initialize ItemCare SQLite database");
 
             app.manage(state);
             Ok(())
@@ -74,5 +75,5 @@ pub fn run() {
             commands::search::global_search,
         ])
         .run(tauri::generate_context!())
-        .expect("Error while running HomeVault Tauri application");
+        .expect("Error while running ItemCare Tauri application");
 }

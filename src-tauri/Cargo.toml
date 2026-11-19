@@ -1,6 +1,6 @@
 [package]
 name = "itemcare"
-version = "1.1.0"
+version = "1.0.0"
 description = "Your Personal Home & Asset Command Center"
 authors = ["ItemCare Contributors"]
 edition = "2021"

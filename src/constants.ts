@@ -7,7 +7,7 @@ export const APP_BRAND = {
   creator: 'Arnab Saha',
   modeLabel: 'Offline-First (Saved on your device)',
   supportedOs: 'Windows 10 & Windows 11',
-  appIdentifier: 'com.itemcare.app',
+  appIdentifier: 'com.itemcare.desktop',
   copyright: 'Copyright (c) 2026 ItemCare',
   sampleWifiSsid: 'ItemCare_5G_Mesh',
 } as const;
@@ -105,14 +105,11 @@ export const BACKUP_CONFIG = {
   defaultInsurancePackFilename: `${APP_BRAND.name}_Insurance_Pack.zip`,
   valuationReportFilename: `${APP_BRAND.name}_Valuation_Report.pdf`,
   previewDbEntryName: 'itemcare_preview_db.json',
-  legacyPreviewDbEntryName: 'homevault_preview_db.json',
   nativeDbFilename: 'itemcare.db',
-  legacyNativeDbFilename: 'homevault.db',
 } as const;
 
 export const STORAGE_KEYS = {
   previewDb: 'itemcare_browser_preview_db_v2',
-  legacyPreviewDb: 'homevault_browser_preview_db_v2',
   previewIndexedDb: 'ItemCarePreviewFiles',
   previewPreRestoreSnapshot: 'itemcare_pre_restore_snapshot',
 } as const;

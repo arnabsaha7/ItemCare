@@ -1,3 +1,9 @@
+use crate::constants::{
+    APP_DATA_DIR_NAME, ATTACHMENTS_FOLDER, BACKUPS_FOLDER,
+    CATEGORY_FOLDERS as CONST_CATEGORY_FOLDERS, DB_FILENAME, DEFAULT_CURRENCY,
+    DEFAULT_NETWORK_SSID, DEFAULT_OWNER_NAME, DEFAULT_RESIDENCE_NAME, DEFAULT_STORAGE_DIR_NAME,
+    DEFAULT_WARRANTY_ALERT_DAYS, DOCUMENTS_ROOT_FOLDER, VAULT_CONFIG_FILENAME,
+};
 use crate::errors::{AppError, AppResult};
 use chrono::{Duration, Utc};
 use serde::{Deserialize, Serialize};
@@ -7,16 +13,7 @@ use std::str::FromStr;
 use std::sync::{Arc, RwLock};
 use uuid::Uuid;
 
-pub const CATEGORY_FOLDERS: &[&str] = &[
-    "Invoices",
-    "Warranty Certificates",
-    "User Manuals",
-    "Serial Photos",
-    "Service Receipts",
-    "Insurance Documents",
-    "Property Documents",
-    "Other",
-];
+pub const CATEGORY_FOLDERS: &[&str] = CONST_CATEGORY_FOLDERS;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
@@ -33,8 +30,8 @@ pub struct AppState {
 }
 
 pub fn ensure_storage_structure(storage_dir: &Path) -> AppResult<()> {
-    let docs_root = storage_dir.join("Documents");
-    let backups_dir = storage_dir.join("Backups");
+    let docs_root = storage_dir.join(DOCUMENTS_ROOT_FOLDER);
+    let backups_dir = storage_dir.join(BACKUPS_FOLDER);
     std::fs::create_dir_all(&docs_root)?;
     std::fs::create_dir_all(&backups_dir)?;
     for folder in CATEGORY_FOLDERS {
@@ -44,7 +41,7 @@ pub fn ensure_storage_structure(storage_dir: &Path) -> AppResult<()> {
 }
 
 pub fn load_storage_config(vault_dir: &Path, default_storage_dir: &Path) -> PathBuf {
-    let config_path = vault_dir.join("vault_config.json");
+    let config_path = vault_dir.join(VAULT_CONFIG_FILENAME);
     if let Ok(raw) = std::fs::read_to_string(&config_path) {
         if let Ok(parsed) = serde_json::from_str::<VaultPathConfig>(&raw) {
             let trimmed = parsed.storage_dir.trim();
@@ -57,7 +54,7 @@ pub fn load_storage_config(vault_dir: &Path, default_storage_dir: &Path) -> Path
 }
 
 pub fn save_storage_config(vault_dir: &Path, storage_dir: &Path) -> AppResult<()> {
-    let config_path = vault_dir.join("vault_config.json");
+    let config_path = vault_dir.join(VAULT_CONFIG_FILENAME);
     let cfg = VaultPathConfig {
         storage_dir: storage_dir.to_string_lossy().to_string(),
     };
@@ -66,10 +63,10 @@ pub fn save_storage_config(vault_dir: &Path, storage_dir: &Path) -> AppResult<()
 }
 
 pub async fn init_database(app_data_dir: &Path) -> AppResult<AppState> {
-    let vault_dir = app_data_dir.join("HomeVault");
-    let attachments_dir = vault_dir.join("attachments");
+    let vault_dir = app_data_dir.join(APP_DATA_DIR_NAME);
+    let attachments_dir = vault_dir.join(ATTACHMENTS_FOLDER);
     let backups_dir = vault_dir.join("backups");
-    let default_storage_dir = vault_dir.join("VaultFiles");
+    let default_storage_dir = vault_dir.join(DEFAULT_STORAGE_DIR_NAME);
     std::fs::create_dir_all(&attachments_dir)?;
     std::fs::create_dir_all(&backups_dir)?;
 
@@ -78,7 +75,7 @@ pub async fn init_database(app_data_dir: &Path) -> AppResult<AppState> {
         ensure_storage_structure(&default_storage_dir)?;
     }
 
-    let db_path = vault_dir.join("homevault.db");
+    let db_path = vault_dir.join(DB_FILENAME);
     let db_url = format!("sqlite://{}", db_path.to_string_lossy());
 
     let connect_options = SqliteConnectOptions::from_str(&db_url)
@@ -135,10 +132,10 @@ async fn seed_lookup_defaults(pool: &SqlitePool) -> AppResult<()> {
     }
 
     let locations = [
-        ("Living Room", "Main Residence", 1),
-        ("Kitchen", "Main Residence", 2),
-        ("Master Bedroom", "Main Residence", 3),
-        ("Utility & Garage", "Main Residence", 4),
+        ("Living Room", DEFAULT_RESIDENCE_NAME, 1),
+        ("Kitchen", DEFAULT_RESIDENCE_NAME, 2),
+        ("Master Bedroom", DEFAULT_RESIDENCE_NAME, 3),
+        ("Utility & Garage", DEFAULT_RESIDENCE_NAME, 4),
         ("Vehicles", "Other Categories", 5),
         ("Everyday Carry", "Other Categories", 6),
     ];
@@ -159,19 +156,23 @@ async fn seed_lookup_defaults(pool: &SqlitePool) -> AppResult<()> {
     sqlx::query(
         "INSERT OR IGNORE INTO application_settings (key, value, updated_at) VALUES
          ('theme', 'light', ?),
-         ('currency', 'INR', ?),
-         ('warrantyAlertDays', '30', ?),
+         ('currency', ?, ?),
+         ('warrantyAlertDays', ?, ?),
          ('notificationsEnabled', 'true', ?),
-         ('ownerName', 'Homeowner', ?),
-         ('residenceName', 'Main Residence', ?),
+         ('ownerName', ?, ?),
+         ('residenceName', ?, ?),
          ('ownerEmail', '', ?),
          ('onboardingCompleted', 'false', ?)",
     )
     .bind(&now_iso)
+    .bind(DEFAULT_CURRENCY)
+    .bind(&now_iso)
+    .bind(DEFAULT_WARRANTY_ALERT_DAYS)
     .bind(&now_iso)
     .bind(&now_iso)
+    .bind(DEFAULT_OWNER_NAME)
     .bind(&now_iso)
-    .bind(&now_iso)
+    .bind(DEFAULT_RESIDENCE_NAME)
     .bind(&now_iso)
     .bind(&now_iso)
     .bind(&now_iso)
@@ -695,7 +696,7 @@ pub async fn load_sample_data(pool: &SqlitePool) -> AppResult<bool> {
         .bind(format!("{} {} registered in {}", s.brand, s.model, s.location))
         .bind(s.serial)
         .bind(s.product_id)
-        .bind(format!("HV-{}", s.serial))
+        .bind(format!("IC-{}", s.serial))
         .bind(if s.featured { 1 } else { 0 })
         .bind(&created_ts)
         .bind(&now_iso)
@@ -704,12 +705,13 @@ pub async fn load_sample_data(pool: &SqlitePool) -> AppResult<bool> {
 
         sqlx::query(
             "INSERT INTO purchases (id, asset_id, purchase_date, purchase_price, currency, retailer, invoice_number, payment_method, notes, created_at, updated_at)
-             VALUES (?, ?, ?, ?, 'INR', ?, ?, 'HDFC Regalia Credit Card', '', ?, ?)"
+             VALUES (?, ?, ?, ?, ?, ?, ?, 'HDFC Regalia Credit Card', '', ?, ?)"
         )
         .bind(Uuid::new_v4().to_string())
         .bind(&asset_id)
         .bind(s.purchase_date)
         .bind(s.price)
+        .bind(DEFAULT_CURRENCY)
         .bind(s.retailer)
         .bind(s.invoice)
         .bind(&created_ts)
@@ -835,9 +837,10 @@ pub async fn load_sample_data(pool: &SqlitePool) -> AppResult<bool> {
 
     sqlx::query(
         "INSERT INTO network_settings (id, router_name, model, ssid, encrypted_password, ip_address, notes, updated_at)
-         VALUES (?, 'Primary Mesh Gateway', 'ASUS ZenWiFi XT8 (AX6600)', 'HomeVault_5G_Mesh', 'HV-Mesh@2026#Secure', '192.168.50.1', 'Dual-band Wi-Fi 6 backhaul wired to Living Room & Study', ?)"
+         VALUES (?, 'Primary Mesh Gateway', 'ASUS ZenWiFi XT8 (AX6600)', ?, 'IC-Mesh@2026#Secure', '192.168.50.1', 'Dual-band Wi-Fi 6 backhaul wired to Living Room & Study', ?)"
     )
     .bind(Uuid::new_v4().to_string())
+    .bind(DEFAULT_NETWORK_SSID)
     .bind(&now_iso)
     .execute(pool)
     .await?;
