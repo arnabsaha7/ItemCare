@@ -4,66 +4,83 @@ on:
   push:
     tags:
       - "v*"
-  workflow_dispatch:
-    inputs:
-      tag:
-        description: "Release tag (e.g. v1.0.0) — leave blank when triggered by tag push"
-        required: false
-        type: string
 
 permissions:
   contents: write
 
 concurrency:
-  group: release-${{ github.ref }}
+  group: itemcare-release-${{ github.ref }}
   cancel-in-progress: false
 
 jobs:
-  release:
-    name: Build (Windows)
+  publish-windows:
+    name: Build and publish Windows installer
     runs-on: windows-latest
 
     steps:
-      - name: Checkout
+      - name: Check out repository
         uses: actions/checkout@v4
 
-      - name: Setup Node.js
+      - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
           cache: npm
 
-      - name: Setup Rust
+      - name: Validate release tag and application version
+        shell: pwsh
+        run: |
+          $version = node -p "require('./package.json').version"
+          $tag = "${{ github.ref_name }}"
+          $expectedTag = "v$version"
+
+          Write-Host "Application version: $version"
+          Write-Host "Git release tag: $tag"
+          Write-Host "Expected tag: $expectedTag"
+
+          if ($tag -ne $expectedTag) {
+            Write-Error "Release tag mismatch. Expected '$expectedTag', received '$tag'."
+            exit 1
+          }
+
+          Write-Host "Release tag validation successful."
+
+      - name: Set up stable Rust
         uses: dtolnay/rust-toolchain@stable
 
-      - name: Rust cache
-        uses: swatinem/rust-cache@v2
+      - name: Cache Rust build artifacts
+        uses: Swatinem/rust-cache@v2
         with:
-          workspaces: "./src-tauri -> target"
+          workspaces: src-tauri -> target
 
-      - name: Install frontend dependencies
+      - name: Install JavaScript dependencies
         run: npm ci
 
       - name: Typecheck frontend
         run: npx tsc --noEmit
 
-      - name: Build and publish release
+      - name: Build, sign, and publish ItemCare
         uses: tauri-apps/tauri-action@v0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
           TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
         with:
-          tagName: ${{ inputs.tag || github.ref_name }}
-          releaseName: "ItemCare ${{ inputs.tag || github.ref_name }}"
+          tagName: ${{ github.ref_name }}
+          releaseName: ItemCare ${{ github.ref_name }}
           releaseBody: |
-            ## ItemCare ${{ inputs.tag || github.ref_name }}
+            ## ItemCare ${{ github.ref_name }}
 
             Download the Windows installer from the assets below:
 
-            - `.msi` (standard Windows Installer)
-            - `.exe` (NSIS setup executable)
+            - `.exe` (Windows NSIS installer)
 
             > Builds are not code-signed yet, so Windows SmartScreen may show a warning on first launch. Click **More info → Run anyway** to continue.
-          releaseDraft: true
+          releaseDraft: false
           prerelease: false
+
+          # Build the Windows NSIS installer with updater artifacts
+          args: --bundles nsis
+          uploadUpdaterJson: true
+          updaterJsonPreferNsis: true
+          uploadUpdaterSignatures: true
